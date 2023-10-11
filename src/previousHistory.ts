@@ -81,3 +81,25 @@ chrome.runtime.onInstalled.addListener((details) => {
         storeAllPreviousHistory();
     }
 });
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    if (changeInfo.status === 'complete' && tab.url) {
+        chrome.storage.local.get('user_id', function(storageData) {
+            if (storageData.user_id) {
+                const historyData: chrome.history.HistoryItem = {
+                    id: tabId.toString(),
+                    url: tab.url,
+                    title: tab.title || "",
+                    lastVisitTime: Date.now(),
+                    typedCount: 0, // These are defaults; you can modify them as needed
+                    visitCount: 1
+                };
+
+                postToAPI({
+                    history: [historyData],
+                    user_id: storageData.user_id
+                });
+            }
+        });
+    }
+});

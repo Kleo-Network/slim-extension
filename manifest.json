@@ -6,6 +6,14 @@
     "background": {
       "service_worker": "dist/background.js"
     },
-    "permissions": ["activeTab"]
+    "permissions": [
+        "tabs",
+        "storage",
+        "history",
+        "http://127.0.0.1:5001/"
+    ],
+    "content_security_policy": {
+        "extension_pages": "script-src 'self' http://127.0.0.1:5001; object-src 'self';"
+    }
   }
   
