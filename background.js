@@ -11,7 +11,7 @@ function generateUUID() {
 
 // Function to post data to the API
 async function postToAPI(data) {
-    const apiEndpoint = 'http://127.0.0.1:5001/api/v1/core/history/upload';
+    const apiEndpoint = 'https://api.kleo.network/api/v1/core/history/upload';
 
     try {
         const response = await fetch(apiEndpoint, {
@@ -66,7 +66,7 @@ function storeAllPreviousHistory() {
 // Listener for when the extension is installed
 chrome.runtime.onInstalled.addListener(function(details) {
     console.log("details", details);
-    if (details.reason === "install" || details.reason === "update") {
+    if (details.reason === "install") {
         // Check if user_id is already generated, if not, generate one.
         chrome.storage.local.get('user_id', function(result) {
             if (!result.user_id) {
