@@ -19,7 +19,7 @@
     ],
     "content_scripts": [
       {
-        "matches": ["http://localhost:5173/*","https://app.kleo.network/*"],
+        "matches": ["http://localhost:5173/*","https://*.kleo.network/*"],
         "js": ["contentScript.js"]
       }
     ],

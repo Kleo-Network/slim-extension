@@ -9,6 +9,16 @@ function generateUUID() {
     });
 }
 
+function stringDoesNotContainAnyFromArray(str) {
+    const array = ["newtab","localhost"]
+    // Check each element in the array to see if it's a substring of 'str'
+    for (let i = 0; i < array.length; i++) {
+        if (str.includes(array[i])) {
+            return false; // 'str' contains an element from the array
+        }
+    }
+    return true; // 'str' does not contain any elements from the array
+}
 // Function to post data to the API
 async function postToAPI(data) {
     const apiEndpoint = 'https://api.kleo.network/api/v1/core/history/upload';
@@ -39,7 +49,7 @@ function storeDayHistory(day) {
         text: '',
         startTime: startTime,
         endTime: endTime,
-        maxResults: 1000
+        maxResults: 5000
     }, function (results) {
         console.log("results?", results);
         if(results.length > 0){
@@ -63,26 +73,41 @@ function storeAllPreviousHistory() {
     }
 }
 
-// Listener for when the extension is installed
-chrome.runtime.onInstalled.addListener(function(details) {
-    console.log("details", details);
-    if (details.reason === "install") {
-        // Check if user_id is already generated, if not, generate one.
-        chrome.storage.local.get('user_id', function(result) {
-            if (!result.user_id) {
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if (request.type === 'KLEO_UPLOAD_PREVIOUS_HISTORY') {
+      // Execute the functionality you want here
+      chrome.storage.local.get('user_id', function(result) {
+        if (!result.user_id) {
                 const userId = generateUUID();
                 chrome.storage.local.set({ user_id: userId }, function() {
                     console.log("user_id saved:", userId);
                 });
             }
         });
-
-        storeAllPreviousHistory();
+       storeAllPreviousHistory();
     }
-});
+  });
+
+// Listener for when the extension is installed
+// chrome.runtime.onInstalled.addListener(function(details) {
+//     console.log("details", details);
+//     if (details.reason === "install") {
+//         // Check if user_id is already generated, if not, generate one.
+//         chrome.storage.local.get('user_id', function(result) {
+//             if (!result.user_id) {
+//                 const userId = generateUUID();
+//                 chrome.storage.local.set({ user_id: userId }, function() {
+//                     console.log("user_id saved:", userId);
+//                 });
+//             }
+//         });
+
+//         storeAllPreviousHistory();
+//     }
+// });
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-    if (changeInfo.status === 'complete' && tab.url) {
+    if (changeInfo.status === 'complete' && tab.url && stringDoesNotContainAnyFromArray(tab.url)) {
         chrome.storage.local.get('user_id', function(storageData) {
             if (storageData.user_id) {
                 const historyData = {
@@ -93,8 +118,6 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
                     typedCount: 0,
                     visitCount: 1
                 };
-                
-
                 postToAPI({
                     history: [historyData],
                     user_id: storageData.user_id
