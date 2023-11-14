@@ -2,20 +2,22 @@
     "manifest_version": 3,
     "name": "Kleo Connect",
     "version": "1.0",
-    "description": "The extension is used for communicating with Kleo Ecosystem.",
+    "description": "We are a social networking website which is based on top of Browsing History!",
     "background": {
       "service_worker": "background.js"
     },
-
+    "icons":{
+      "128" : "logo/128.png",
+      "64": "logo/64.png",
+      "32": "logo/32.png",
+      "16": "logo/16.png" 
+    },
     "permissions": [
         "tabs",
-        "storage",
         "history",
+        "storage",
         "activeTab",
-        "http://127.0.0.1:5001/",
-        "http://localhost:5173/",
-        "https://app.kleo.network/*",
-        "https://api.kleo.network/*"
+        "runtime"
     ],
     "content_scripts": [
       {
