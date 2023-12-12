@@ -1,7 +1,7 @@
-//  console.log('Background script running!');
-//  chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-//     console.log("Received message:", request);
-// });
+
+const PRODUCTION = 'https://api.kleo.network/api/v1/core';
+const LOCAL = 'http://127.0.0.1:5001/api/v1/core';
+
 function stringDoesNotContainAnyFromArray(str) {
     const array = ["newtab","localhost"]
     // Check each element in the array to see if it's a substring of 'str'
@@ -13,14 +13,15 @@ function stringDoesNotContainAnyFromArray(str) {
     return true; // 'str' does not contain any elements from the array
 }
 // Function to post data to the API
-async function postToAPI(data) {
-    const apiEndpoint = 'http://127.0.0.1:5001/api/v1/core/history/upload';
+async function postToAPI(data, authToken) {
+    const apiEndpoint = `${LOCAL}/history/upload`;
    
     try {
         const response = await fetch(apiEndpoint, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `${authToken}`
             },
             body: JSON.stringify(data)
         });
@@ -51,8 +52,9 @@ function storeDayHistory(day) {
             if (storageData.user_id) {
                 postToAPI({
                     history: results,
-                    user_id: storageData.user_id
-                });
+                    user_id: storageData.user_id.id,
+                    signup: true
+                }, storageData.user_id.token);
             }
         });
     }
@@ -69,20 +71,19 @@ function storeAllPreviousHistory() {
 }
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    console.log("message sent with request", request);
-    console.log("message is sent");
     if (request.type == 'KLEO_UPLOAD_PREVIOUS_HISTORY') {
+        //alert("hello");
+        //alert("request")
       // Execute the functionality you want here
       // console.log("KLEO UPLOAD HISTORY CALLED?")
-      chrome.storage.local.get('user_id', function(result) {
-        if (!result.user_id) {
+    //   chrome.storage.local.get('user_id', function(result) {
+    //     if (!result.user_id) {
                 console.log("request", request);
-                const userId = request.address;
-                chrome.storage.local.set({ user_id: userId }, function() {
-                    console.log("user_id saved:", userId);
-                });
-            }
-        });
+                const userData = { 'id': request.address ,'token': request.token };
+                chrome.storage.local.set({ user_id: userData });
+                
+        //     }
+        // });
        storeAllPreviousHistory();
     }
   });
@@ -90,8 +91,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     if (changeInfo.status === 'complete' && tab.url && stringDoesNotContainAnyFromArray(tab.url)) {
-        console.log("tab url is accessible?", tab.url);
-        console.log("tab title is accessible", tab.title);
+        
         chrome.storage.local.get('user_id', function(storageData) {
             if (storageData.user_id) {
                 const historyData = {
@@ -99,14 +99,12 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
                     url: tab.url,
                     title: tab.title || "",
                     lastVisitTime: Date.now(),
-                    visitTime: Date.now(),
-                    typedCount: 0,
-                    visitCount: 1
+                    visitTime: Date.now()
                 };
                 postToAPI({
                     history: [historyData],
-                    user_id: storageData.user_id
-                });
+                    user_id: storageData.user_id.id 
+                }, storageData.user_id.token);
             }
         });
     }
