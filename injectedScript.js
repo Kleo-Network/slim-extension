@@ -1,7 +1,7 @@
 document.addEventListener("ExtensionIdEvent", function (e) {
   const extensionId = e.detail.extensionId;
   console.log("Received Extension ID:", extensionId);
-  
+  window.kleoConnect = true;
   window.kleoUploadHistory = function(address, token) {
       alert("address", address);
       alert("token", token);
