@@ -14,7 +14,7 @@ function stringDoesNotContainAnyFromArray(str) {
 }
 // Function to post data to the API
 async function postToAPI(data, authToken) {
-    const apiEndpoint = `${LOCAL}/history/upload`;
+    const apiEndpoint = `${PRODUCTION}/history/upload`;
    
     try {
         const response = await fetch(apiEndpoint, {
