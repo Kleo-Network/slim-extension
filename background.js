@@ -1,6 +1,6 @@
 
 const PRODUCTION = 'https://api.kleo.network/api/v1/core';
-const LOCAL = 'http://127.0.0.1:5001/api/v1/core';
+//const LOCAL = 'http://127.0.0.1:5001/api/v1/core';
 
 function stringDoesNotContainAnyFromArray(str) {
     const array = ["newtab","localhost"]
