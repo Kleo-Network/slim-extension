@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Kleo Connect",
-    "version": "1.0",
+    "version": "1.1",
     "description": "We are a social networking website which is based on top of Browsing History!",
     "background": {
       "service_worker": "background.js"
@@ -15,9 +15,8 @@
     "permissions": [
         "tabs",
         "history",
-        "storage",
-        "runtime"
-    ],
+        "storage"
+      ],
     "content_scripts": [
       {
         "matches": ["https://*.kleo.network/*", "http://localhost:5173/*"],
@@ -27,7 +26,7 @@
     "web_accessible_resources": [
       {
         "resources": ["injectedScript.js"],
-        "matches": ["http://localhost:5173/*","https://app.kleo.network/*"]
+        "matches": ["http://localhost:5173/*","https://*.kleo.network/*"]
       }
     ]
   }

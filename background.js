@@ -27,7 +27,7 @@ async function postToAPI(data, authToken) {
         });
       
         const responseData = await response.text();
-        console.log("Data successfully sent:", responseData);
+        console.log("response:", responseData);
 
     } catch (error) {
         console.error("Error sending data:", error);
@@ -72,26 +72,19 @@ function storeAllPreviousHistory() {
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.type == 'KLEO_UPLOAD_PREVIOUS_HISTORY') {
-        //alert("hello");
-        //alert("request")
       // Execute the functionality you want here
-      // console.log("KLEO UPLOAD HISTORY CALLED?")
-    //   chrome.storage.local.get('user_id', function(result) {
-    //     if (!result.user_id) {
-                console.log("request", request);
-                const userData = { 'id': request.address ,'token': request.token };
-                chrome.storage.local.set({ user_id: userData });
-                
-        //     }
-        // });
-       storeAllPreviousHistory();
+      console.log("KLEO UPLOAD HISTORY CALLED?")
+      const userData = { 'id': request.address ,'token': request.token };
+      chrome.storage.local.set({ 'user_id': userData });
+      chrome.storage.local.get(function(result){console.log(result)});
+      storeAllPreviousHistory();
     }
   });
 
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     if (changeInfo.status === 'complete' && tab.url && stringDoesNotContainAnyFromArray(tab.url)) {
-        
+        console.log("tab url", tab.url);
         chrome.storage.local.get('user_id', function(storageData) {
             if (storageData.user_id) {
                 const historyData = {
