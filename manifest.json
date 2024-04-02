@@ -15,18 +15,21 @@
     "permissions": [
         "tabs",
         "history",
-        "storage"
+        "storage",
+        "<all_urls>"
       ],
     "content_scripts": [
       {
-        "matches": ["https://*.kleo.network/*", "http://localhost:5173/*"],
-        "js": ["contentScript.js"]
+        "matches": ["<all_urls>"],
+        "js": ["contentScript.js"],
+        "run_at": "document_idle"
       }
     ],
+    
     "web_accessible_resources": [
       {
         "resources": ["injectedScript.js"],
-        "matches": ["http://localhost:5173/*","https://*.kleo.network/*"]
+        "matches":  ["<all_urls>"]
       }
     ]
   }

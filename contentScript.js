@@ -1,3 +1,20 @@
+function getPageContent() {
+    // Simple example to get body text, customize as needed
+    console.log('document body', document.body)
+    return document.body.innerText;
+}
+
+// chrome.runtime.onMessage.addListener(
+//     function(request, sender, sendResponse) {
+//         if (request.action === "GET_PAGE_CONTENT") {
+//             console.log('hello world')
+//             const content = getPageContent();
+//             sendResponse({content: content});
+//         }
+//     }
+// );
+
+
 function dispatchCustomEvent(eventName, detail) {
     document.dispatchEvent(new CustomEvent(eventName, { detail }));
 }

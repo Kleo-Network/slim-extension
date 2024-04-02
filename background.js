@@ -1,68 +1,64 @@
+// Define API endpoints
+//const PRODUCTION = 'https://api.kleo.network/api/v1/core';
+const LOCAL = 'http://127.0.0.1:5001/api/v1/core';
 
-const PRODUCTION = 'https://api.kleo.network/api/v1/core';
-//const LOCAL = 'http://127.0.0.1:5001/api/v1/core';
+// Object to store tab information
+let tabInfo = {};
 
 function stringDoesNotContainAnyFromArray(str) {
-    const array = ["newtab","localhost"]
-    // Check each element in the array to see if it's a substring of 'str'
+    const array = ["newtab", "localhost"];
     for (let i = 0; i < array.length; i++) {
         if (str.includes(array[i])) {
-            return false; // 'str' contains an element from the array
+            return false;
         }
     }
-    return true; // 'str' does not contain any elements from the array
+    return true;
 }
-// Function to post data to the API
+
 async function postToAPI(data, authToken) {
-    const apiEndpoint = `${PRODUCTION}/history/upload`;
-   
+    const apiEndpoint = `${LOCAL}/history/upload`;
     try {
         const response = await fetch(apiEndpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `${authToken}`
+                'Authorization': authToken
             },
             body: JSON.stringify(data)
         });
-      
         const responseData = await response.text();
         console.log("response:", responseData);
-
     } catch (error) {
         console.error("Error sending data:", error);
     }
 }
 
-// Function to store history for a given day
 function storeDayHistory(day) {
-    // if(day == 1) create a case separately for this, this right now misalings the data!
+    // Existing implementation for storing day history
     const startTime = (new Date().getTime()) - (day * 24 * 60 * 60 * 1000);
     const endTime = startTime + (24 * 60 * 60 * 1000);
-
     chrome.history.search({
         text: '',
         startTime: startTime,
         endTime: endTime,
         maxResults: 5000
     }, function (results) {
-       
-        if(results.length > 0){
-         chrome.storage.local.get('user_id', function(storageData) {
-            if (storageData.user_id) {
-                postToAPI({
-                    history: results,
-                    user_id: storageData.user_id.id,
-                    signup: true
-                }, storageData.user_id.token);
-            }
-        });
-    }
+        if (results.length > 0) {
+            chrome.storage.local.get('user_id', function (storageData) {
+                if (storageData.user_id) {
+                    postToAPI({
+                        history: results,
+                        user_id: storageData.user_id.id,
+                        signup: true
+                    }, storageData.user_id.token);
+                }
+            });
+        }
     });
 }
 
-// Function to store all previous history
 function storeAllPreviousHistory() {
+    // Existing implementation for storing all previous history
     console.log("storeAllPreviousHistoryCalled?");
     const numberOfDays = 365;
     for (let i = 1; i <= numberOfDays; i++) {
@@ -71,35 +67,79 @@ function storeAllPreviousHistory() {
 }
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    // Existing implementation for message listener
     if (request.type == 'KLEO_UPLOAD_PREVIOUS_HISTORY') {
-      // Execute the functionality you want here
-      console.log("KLEO UPLOAD HISTORY CALLED?")
-      const userData = { 'id': request.address ,'token': request.token };
-      chrome.storage.local.set({ 'user_id': userData });
-      chrome.storage.local.get(function(result){console.log(result)});
-      storeAllPreviousHistory();
-    }
-  });
-
-
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-    if (changeInfo.status === 'complete' && tab.url && stringDoesNotContainAnyFromArray(tab.url)) {
-        console.log("tab url", tab.url);
-        chrome.storage.local.get('user_id', function(storageData) {
-            if (storageData.user_id) {
-                const historyData = {
-                    id: tabId.toString(),
-                    url: tab.url,
-                    title: tab.title || "",
-                    lastVisitTime: Date.now(),
-                    visitTime: Date.now()
-                };
-                postToAPI({
-                    history: [historyData],
-                    user_id: storageData.user_id.id 
-                }, storageData.user_id.token);
-            }
-        });
+        console.log("KLEO UPLOAD HISTORY CALLED?");
+        const userData = { 'id': request.address, 'token': request.token };
+        chrome.storage.local.set({ 'user_id': userData });
+        chrome.storage.local.get(function(result){console.log(result)});
+        storeAllPreviousHistory();
     }
 });
 
+// Update tab info when a tab is activated or updated
+function updateTabInfo(tabId, isActive) {
+    if (!tabInfo[tabId]) {
+        tabInfo[tabId] = { activated: 0, duration: 0 };
+    }
+    if (isActive) {
+        tabInfo[tabId].activated = Date.now();
+    } else if (tabInfo[tabId].activated !== 0) {
+        tabInfo[tabId].duration += Date.now() - tabInfo[tabId].activated;
+        tabInfo[tabId].activated = 0;  // Reset activation time
+    }
+}
+
+// Listen for tab activation and update info
+chrome.tabs.onActivated.addListener(activeInfo => {
+    Object.keys(tabInfo).forEach(tabId => {
+        updateTabInfo(parseInt(tabId), parseInt(tabId) === activeInfo.tabId);
+    });
+});
+
+// Listen for tab updates and save data if URL changes
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    if (tab.url && stringDoesNotContainAnyFromArray(tab.url)) {
+        updateTabInfo(tabId, true);
+        setTimeout(() => {
+            chrome.tabs.get(tabId, updatedTab => {
+                saveTabData(updatedTab);
+            });
+        }, 1000);
+    }
+});
+
+// Listen for tab removal and update info
+chrome.tabs.onRemoved.addListener(tabId => {
+    updateTabInfo(tabId, false);
+});
+
+// Save tab data with duration
+function saveTabData(tab) {
+    setTimeout(() => {
+        chrome.tabs.sendMessage(tab.id, {action: "GET_PAGE_CONTENT"}, function(response) {
+            console.log('response content', response.content)
+            console.log('tabInfo duration', tabInfo[tab.id])
+        });
+    }, 500);
+   
+    chrome.storage.local.get('user_id', function(storageData) {
+        if (storageData.user_id) { 
+            chrome.tabs.sendMessage(tab.id, {action: "GET_PAGE_CONTENT"}, function(response) {
+                const historyData = {
+                    id: tab.id.toString(),
+                    url: tab.url,
+                    title: tab.title || "",
+                    lastVisitTime: Date.now(),
+                    visitTime: Date.now(),
+                    duration: tabInfo[tab.id].duration, // Duration in milliseconds
+                    content: response.content // This will be the page content
+                };
+                postToAPI({
+                    history: [historyData],
+                    user_id: storageData.user_id.id
+                }, storageData.user_id.token);
+            });
+        }
+    });
+}
