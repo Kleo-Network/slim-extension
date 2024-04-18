@@ -1,10 +1,10 @@
 
-const PRODUCTION = 'https://api.kleo.network/api/v1/core';
-//const LOCAL = 'http://127.0.0.1:5001/api/v1/core';
+//const PRODUCTION = 'https://api.kleo.network/api/v1/core';
+const PRODUCTION = 'http://127.0.0.1:5001/api/v1/core';
 
 function stringDoesNotContainAnyFromArray(str) {
     const array = ["newtab","localhost"]
-    // Check each element in the array to see if it's a substring of 'str'
+
     for (let i = 0; i < array.length; i++) {
         if (str.includes(array[i])) {
             return false; // 'str' contains an element from the array
@@ -12,7 +12,7 @@ function stringDoesNotContainAnyFromArray(str) {
     }
     return true; // 'str' does not contain any elements from the array
 }
-// Function to post data to the API
+
 async function postToAPI(data, authToken) {
     const apiEndpoint = `${PRODUCTION}/history/upload`;
    
@@ -34,11 +34,9 @@ async function postToAPI(data, authToken) {
     }
 }
 
-// Function to store history for a given day
 function storeDayHistory(day) {
-    // if(day == 1) create a case separately for this, this right now misalings the data!
     const startTime = (new Date().getTime()) - (day * 24 * 60 * 60 * 1000);
-    const endTime = startTime + (24 * 60 * 60 * 1000);
+    const endTime = new Date().getTime();
 
     chrome.history.search({
         text: '',
@@ -52,7 +50,7 @@ function storeDayHistory(day) {
             if (storageData.user_id) {
                 postToAPI({
                     history: results,
-                    user_id: storageData.user_id.id,
+                    slug: storageData.user_id.id,
                     signup: true
                 }, storageData.user_id.token);
             }
@@ -64,10 +62,9 @@ function storeDayHistory(day) {
 // Function to store all previous history
 function storeAllPreviousHistory() {
     console.log("storeAllPreviousHistoryCalled?");
-    const numberOfDays = 365;
-    for (let i = 1; i <= numberOfDays; i++) {
-        storeDayHistory(i);
-    }
+    const numberOfDays = 5;
+    storeDayHistory(numberOfDays);
+    
 }
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -84,7 +81,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     if (changeInfo.status === 'complete' && tab.url && stringDoesNotContainAnyFromArray(tab.url)) {
-        console.log("tab url", tab.url);
+       
         chrome.storage.local.get('user_id', function(storageData) {
             if (storageData.user_id) {
                 const historyData = {
@@ -96,7 +93,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
                 };
                 postToAPI({
                     history: [historyData],
-                    user_id: storageData.user_id.id 
+                    slug: storageData.user_id.id 
                 }, storageData.user_id.token);
             }
         });
