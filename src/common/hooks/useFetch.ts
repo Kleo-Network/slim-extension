@@ -45,21 +45,37 @@ function useFetch<T>(url?: string, options?: Options<T>): FetchResponse<T> {
     'http://127.0.0.1:5001/api/v1/core' ||
     'https://api.kleo.network/api/v1/core'
 
-  function getToken(): string {
-    let token = ''
-    chrome.storage.local.get('user_id', storageData => {
-      if(storageData.user_id) {
-        token = storageData.user_id.token
-      }
+  // function getToken(): string {
+  //   let token = ''
+  //   chrome.storage.local.get('user_id', storageData => {
+  //     if(storageData.user_id) {
+  //       token = storageData.user_id.token
+  //     }
+  //   console.log('token inside',token)
+  //   });
+  //   console.log('token',token)
+  //   return token
+  // }
+
+  function getToken(): Promise<string> {
+    return new Promise((resolve, reject) => {
+        chrome.storage.local.get('user_id', storageData => {
+            if (chrome.runtime.lastError) {
+                reject(chrome.runtime.lastError);
+            } else {
+                const token = storageData.user_id?.token || '';
+                resolve(token);
+            }
+        });
     });
-    return token
-  }
+}
 
   const fetchData = async (url: string, options?: Options<T>) => {
     if (url === '') {
       return
     }
-    const token = getToken()
+    const token = await getToken()
+    console.log('token in request', token);
     setStatus(FetchStatus.LOADING)
     options = {
       ...options,

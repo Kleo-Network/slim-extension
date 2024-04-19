@@ -24,6 +24,12 @@ window.addEventListener("message", function(event) {
         console.log("Content script received:", event.data);
         chrome.runtime.sendMessage(event.data);
     }
+
+    if (event.data.type && (event.data.type == "KLEO_SIGN_IN")) {
+        console.log(event.data);
+        console.log("Content script received:", event.data);
+        chrome.runtime.sendMessage(event.data);
+    }
 });
 
 injectScript(chrome.runtime.getURL("injectedScript.js"));

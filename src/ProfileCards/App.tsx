@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { ReactComponent as Tick } from '../assets/images/check.svg'
-import { ReactComponent as Cross } from '../assets/images/cross.svg'
+// import Tick from '../assets/images/check.svg'
+// import Cross from '../assets/images/cross.svg'
 import CountdownTimer from './countdown'
 import { PendingCard, UserData } from '../common/interface'
 import useFetch from '../common/hooks/useFetch'
@@ -29,6 +29,7 @@ export default function App() {
 
   useEffect(() => {
     chrome.storage.local.get('user_id', storageData => {
+      console.log(storageData.user_id);
       if(storageData.user_id) {
         setSlug(storageData.user_id.id)
       }
@@ -39,13 +40,13 @@ export default function App() {
   const GET_USER_DETAIL = 'user/get-user/{slug}'
   const { fetchData: fetchUserData } = useFetch<UserData>()
 
-  function getUserDetails() {
+  function getUserDetails(slug: string) {
     return GET_USER_DETAIL.replace('{slug}', slug)
   }
 
   useEffect(() => {
     try {
-      fetchUserData(getUserDetails(), {
+      fetchUserData(getUserDetails(slug), {
         onSuccessfulFetch(data) {
           if (data) {
             setUser(data)
@@ -55,7 +56,7 @@ export default function App() {
     } catch (error) {
       console.error('Error fetching data:', error)
     }
-  }, [])
+  }, [slug])
 
   const formatDate = (epoch: number): string => {
     const date = new Date(epoch * 1000) // Convert epoch to milliseconds
@@ -80,18 +81,18 @@ export default function App() {
   const { fetchData: managePendingCardCreation } = useFetch<any>()
   const CREATE_PUBLISHED_CARDS = 'cards/published/{slug}'
 
-  function createPendingCard() {
+  function createPendingCard(slug: string) {
     return CREATE_PUBLISHED_CARDS.replace('{slug}', slug)
   }
 
-  function getPendingCardDetails() {
+  function getPendingCardDetails(slug: string) {
     return GET_CARD_DETAIL.replace('{slug}', slug)
   }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await fetchPendingCardData(getPendingCardDetails(), {
+        await fetchPendingCardData(getPendingCardDetails(slug), {
           onSuccessfulFetch(data) {
             if (data) {
               setCards(data)
@@ -105,7 +106,7 @@ export default function App() {
       }
     }
     fetchData()
-  }, [])
+  }, [slug])
 
   const filterCards = (selectedDate: string) => {
     const filteredCards = cards.filter((card) => {
@@ -133,7 +134,7 @@ export default function App() {
   const removeCard = (id: string, hasToPublished: boolean) => {
     console.log(id)
 
-    managePendingCardCreation(createPendingCard(), {
+    managePendingCardCreation(createPendingCard(slug), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -156,8 +157,8 @@ export default function App() {
     'https://cdn.midjourney.com/bb411caf-06cd-4343-93e1-dfa1e1945a30/0_3.webp'
 
   return (
-    <div className="flex flex-col w-full justify-center items-center">
-      <div className="flex flex-col self-stretch rounded-lg border border-gray-400 w-2/3 mx-auto my-8">
+    <div className="flex flex-col w-full justify-center items-center min-w-[1200px] min-h-[400px]">
+      <div className="flex flex-col self-stretch rounded-lg border border-gray-400 w-3/5 mx-6 my-8">
         <header className="flex flex-row gap-2 justify-between items-center px-6 py-5 font-medium border-b border-gray-200">
           <div className="flex w-full justify-between items-center gap-2">
             <div>
@@ -247,13 +248,13 @@ export default function App() {
                     onClick={() => removeCard(activeCard.id, true)}
                     className="flex justify-center items-center mb-2 px-3 py-2 rounded-2xl bg-green-700 text-green-800 font-medium rounded hover:bg-green-800 w-full h-1/2"
                   >
-                    <Tick className="w-8 stroke-white fill-white" />
+                    <div className="w-8 stroke-white text-white">Publish a card</div>
                   </button>
                   <button
                     onClick={() => removeCard(activeCard.id, false)}
                     className="flex justify-center items-center px-10 py-4 bg-red-500 text-white text-md font-medium rounded-2xl hover:bg-red-800 w-full h-1/2"
                   >
-                    <Cross className="w-8 stroke-white fill-white" />
+                    <div className="w-8 stroke-white text-white">Discard a card</div>
                   </button>
                 </div>
               </>

@@ -8,4 +8,11 @@ document.addEventListener("ExtensionIdEvent", function (e) {
           console.error("Error sending message:", error);
       }
   };
+  window.signIn = function(address, token) {
+    try {
+      window.postMessage({ type: 'KLEO_SIGN_IN', address: address, token: token }, "*");
+    } catch (error) {
+        console.error("Error sending message:", error);
+    }
+};
 });
