@@ -98,6 +98,7 @@ export default function App() {
               setCards(data)
               setActiveCardList(data)
               setActiveCard(data[0])
+              ;(window as any).updateCounter(data.length)
             }
           }
         })
@@ -134,16 +135,16 @@ export default function App() {
   const removeCard = (id: string, hasToPublished: boolean) => {
     console.log(id)
 
-    managePendingCardCreation(createPendingCard(slug), {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        id: id,
-        isPublishCard: hasToPublished
-      })
-    })
+    // managePendingCardCreation(createPendingCard(slug), {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify({
+    //     id: id,
+    //     isPublishCard: hasToPublished
+    //   })
+    // })
 
     setCards((cards) => cards.filter((card) => card.id !== id))
     setActiveCardList((activeCardList) =>
@@ -151,6 +152,7 @@ export default function App() {
     )
     const active = activeCardList.filter((card) => card.id !== id)[0]
     setActiveCard(active)
+    ;(window as any).updateCounter(cards.length)
   }
 
   const user1 =

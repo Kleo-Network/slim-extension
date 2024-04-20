@@ -19,7 +19,8 @@
     "permissions": [
         "tabs",
         "history",
-        "storage"
+        "storage",
+        "activeTab"
       ],
     "content_scripts": [
       {
