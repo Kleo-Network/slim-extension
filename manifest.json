@@ -6,6 +6,10 @@
     "background": {
       "service_worker": "background.js"
     },
+    "action": {
+      "default_popup": "js/index.html",
+      "default_title": "React Chrome Extension"
+    },
     "icons":{
       "128" : "logo/128.png",
       "64": "logo/64.png",
@@ -15,7 +19,8 @@
     "permissions": [
         "tabs",
         "history",
-        "storage"
+        "storage",
+        "activeTab"
       ],
     "content_scripts": [
       {

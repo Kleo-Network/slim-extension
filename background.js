@@ -1,7 +1,6 @@
 
 //const PRODUCTION = 'https://api.kleo.network/api/v1/core';
 const PRODUCTION = 'http://127.0.0.1:5001/api/v1/core';
-
 function stringDoesNotContainAnyFromArray(str) {
     const array = ["newtab","localhost"]
 
@@ -67,14 +66,35 @@ function storeAllPreviousHistory() {
     
 }
 
+let notificationCount = 0;
+
+// Function to update badge text
+function updateBadge(count) {
+    console.log('CA',chrome.browserAction)
+    chrome.action.setBadgeText({ text: count > 0 ? count.toString() : "" });
+}
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    console.log(request)
     if (request.type == 'KLEO_UPLOAD_PREVIOUS_HISTORY') {
       // Execute the functionality you want here
+      chrome.browserAction.setBadgeText('1')
       console.log("KLEO UPLOAD HISTORY CALLED?")
       const userData = { 'id': request.address ,'token': request.token };
       chrome.storage.local.set({ 'user_id': userData });
       chrome.storage.local.get(function(result){console.log(result)});
       storeAllPreviousHistory();
+    }
+    else if(request.type == 'KLEO_SIGN_IN') {
+         // Execute the functionality you want here
+      const userData = { 'id': request.address ,'token': request.token };
+      chrome.storage.local.set({ 'user_id': userData });
+      chrome.storage.local.get(function(result){console.log(result)});
+    }
+    else if(request.type == 'UPDATE_NOTIFICATION_COUNTER') {
+        const counter = request.counter;
+        console.log('c',counter)
+        updateBadge(counter);
     }
   });
 
