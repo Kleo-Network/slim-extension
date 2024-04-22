@@ -31,11 +31,6 @@ window.addEventListener("message", function(event) {
         chrome.runtime.sendMessage(event.data);
     }
 
-    if (event.data.type && (event.data.type == "UPDATE_NOTIFICATION_COUNTER")) {
-        console.log(event.data);
-        console.log("Content script received:", event.data);
-        chrome.runtime.sendMessage(event.data);
-    }
 });
 
 injectScript(chrome.runtime.getURL("injectedScript.js"));
