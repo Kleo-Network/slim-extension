@@ -135,16 +135,16 @@ export default function App() {
   const removeCard = (id: string, hasToPublished: boolean) => {
     console.log(id)
 
-    // managePendingCardCreation(createPendingCard(slug), {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify({
-    //     id: id,
-    //     isPublishCard: hasToPublished
-    //   })
-    // })
+    managePendingCardCreation(createPendingCard(slug), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        id: id,
+        isPublishCard: hasToPublished
+      })
+    })
 
     setCards((cards) => cards.filter((card) => card.id !== id))
     setActiveCardList((activeCardList) =>
