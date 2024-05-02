@@ -1,6 +1,6 @@
 
-//const PRODUCTION = 'https://api.kleo.network/api/v1/core';
-const PRODUCTION = 'http://127.0.0.1:5001/api/v1/core';
+const PRODUCTION = 'https://api.kleo.network/api/v1/core';
+// const PRODUCTION = 'http://127.0.0.1:5001/api/v1/core';
 function stringDoesNotContainAnyFromArray(str) {
     const array = ["newtab","localhost"]
 
@@ -30,6 +30,23 @@ async function postToAPI(data, authToken) {
 
     } catch (error) {
         console.error("Error sending data:", error);
+    }
+}
+
+async function getPendingCardCountForUser(slug, authToken) {
+    const apiEndpoint = `${PRODUCTION}/cards/pending/${slug}`;
+    try {
+        const response = await fetch(apiEndpoint, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `${authToken}`
+            }
+        });
+        const data = await response.json()
+        return data.length
+    } catch (error) {
+        console.error("Error fetching pending card count for user: ",slug);
     }
 }
 
@@ -70,9 +87,19 @@ let notificationCount = 0;
 
 // Function to update badge text
 function updateBadge(count) {
-    console.log('CA',chrome.browserAction)
+    chrome.action.setBadgeBackgroundColor({ color: [255, 255, 255, 255] }); // Set badge background color to white
+    chrome.action.setBadgeTextColor({ color: '#8a2be2' });
     chrome.action.setBadgeText({ text: count > 0 ? count.toString() : "" });
 }
+
+chrome.runtime.onStartup.addListener(() => {
+    chrome.storage.local.get('user_id',async function(storageData) {
+        if (storageData.user_id) {
+            const count = await getPendingCardCountForUser(storageData.user_id.id, storageData.user_id.token);
+            updateBadge(count);
+        }
+    });
+  });
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     console.log(request)
@@ -89,6 +116,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       const userData = { 'id': request.address ,'token': request.token };
       chrome.storage.local.set({ 'user_id': userData });
       chrome.storage.local.get(function(result){console.log(result)});
+    }
+    else if(request.type == 'UPDATE_NOTIFICATION_COUNTER') {
+        const counter = request.counter;
+        updateBadge(counter);
     }
   });
 
