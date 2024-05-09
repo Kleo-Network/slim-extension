@@ -15,5 +15,11 @@ document.addEventListener("ExtensionIdEvent", function (e) {
         console.error("Error sending message:", error);
     }
   };
-  
+  window.updateCounter = function(count) {
+    try {
+      window.postMessage({ type: 'UPDATE_NOTIFICATION_COUNTER', counter: count}, "*");
+    } catch (error) {
+        console.error("Error sending message:", error);
+    }
+  };
 });

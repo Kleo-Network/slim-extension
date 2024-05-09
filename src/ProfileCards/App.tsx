@@ -98,7 +98,7 @@ export default function App() {
               setCards(data)
               setActiveCardList(data)
               setActiveCard(data[0])
-              ;(window as any).updateCounter(data.length)
+              chrome.runtime.sendMessage({ type: 'UPDATE_NOTIFICATION_COUNTER', counter: (data.length)})
             }
           }
         })
@@ -152,7 +152,7 @@ export default function App() {
     )
     const active = activeCardList.filter((card) => card.id !== id)[0]
     setActiveCard(active)
-    ;(window as any).updateCounter(cards.length)
+    chrome.runtime.sendMessage({ type: 'UPDATE_NOTIFICATION_COUNTER', counter: (cards.length - 1)})
   }
 
   const user1 =
