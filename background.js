@@ -87,8 +87,8 @@ let notificationCount = 0;
 
 // Function to update badge text
 function updateBadge(count) {
-    chrome.action.setBadgeBackgroundColor({ color: [255, 255, 255, 255] }); // Set badge background color to white
-    chrome.action.setBadgeTextColor({ color: '#8a2be2' });
+    chrome.action.setBadgeTextColor({ color: [255, 255, 255, 255] }); // Set badge background color to white
+    chrome.action.setBadgeBackgroundColor({ color: '#8a2be2' });
     chrome.action.setBadgeText({ text: count > 0 ? count.toString() : "" });
 }
 
