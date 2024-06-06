@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react'
 import CountdownTimer from './countdown'
 import { PendingCard, UserDataProps } from '../common/interface'
 import useFetch from '../common/hooks/useFetch'
+import ProgressBar from '../progressBar/progressBar'
 
 export default function App({ user, setUser, slug}: UserDataProps) {
 
   const emptyStringArray: string[] = []
+  const [totalCardCount, setTotalCardCount] = useState(0);
 
   const formatDate = (epoch: number): string => {
     const date = new Date(epoch * 1000) // Convert epoch to milliseconds
@@ -47,6 +49,7 @@ export default function App({ user, setUser, slug}: UserDataProps) {
               setCards(data)
               setActiveCardList(data)
               setActiveCard(data[0])
+              setTotalCardCount(data.length)
               chrome.runtime.sendMessage({ type: 'UPDATE_NOTIFICATION_COUNTER', counter: (data.length)})
             }
           }
@@ -84,16 +87,16 @@ export default function App({ user, setUser, slug}: UserDataProps) {
   const removeCard = (id: string, hasToPublished: boolean) => {
     console.log(id)
 
-    managePendingCardCreation(createPendingCard(slug), {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        id: id,
-        isPublishCard: hasToPublished
-      })
-    })
+    // managePendingCardCreation(createPendingCard(slug), {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify({
+    //     id: id,
+    //     isPublishCard: hasToPublished
+    //   })
+    // })
 
     setCards((cards) => cards.filter((card) => card.id !== id))
     setActiveCardList((activeCardList) =>
@@ -130,66 +133,64 @@ export default function App({ user, setUser, slug}: UserDataProps) {
   return (
     <>
     {activeCardList.length > 0 ? (
-    <div className="flex flex-col justify-center items-center w-[400px] max-h-[300px] bg-[#FCFCFD]">
-      <div className="flex flex-col w-[368px] h-[345px] bg-gray-100 mt-16 rounded-lg">
-        <div className="flex flex-col md:flex-row justify-between items-center p-2">
-          <div className="flex flex-col md:flex-row justify-center items-stretch p-6 gap-4 mx-auto">
-                <div className="flex-grow">
-                  {activeCard.cardType == 'DataCard' && <div className="bg-white rounded-lg shadow-lg p-3 px-5 bg-violet-50 flex flex-col justify-between min-h-[desiredMinHeight]">
-                    <header className="relative flex items-center">
-                      {activeCard.urls.map((urls, index) => (
-                        <div className="w-6 h-6 flex-none rounded-full border border-white border-spacing-4 fill-white">
-                          <img
-                            className="absolute w-6 h-6 flex-none rounded-full border-white border-2 fill-white"
-                            style={{ left: `${index * 1.3}rem` }}
-                            src={`https://www.google.com/s2/favicons?domain=${urls.url}&sz=24`}
-                          />
-                        </div>
-                      ))}
-                      <div className="flex flex-row ml-auto items-center">
-                        {/* <Arrow className="w-6 h-4 mr-1" /> */}
-                        <div className="flex font-inter text-gray-400 font-normal">
-                          {getDaysAgo(activeCard.date)}
-                        </div>
-                      </div>
-                    </header>
-
-                    <div className="flex flex-col justify-center mt-1">
-                      <blockquote className="text-gray-600 text-xs font-normal">
-                        {activeCard.content}
-                      </blockquote>
-                    </div>
-
-
-                    <div className="flex flex-row w-full flex-wrap gap-2 self-stretch items-center justify-start pt-5">
-                      <>
-                        {activeCard.urls.map((urls) => (
-                          <button
-                            className="flex items-center gap-2 rounded-3xl border border-gray-200 px-2 py-1 bg-gray-50"
-                            style={{
-                              backgroundColor: '#fff'
-                            }}
-                            onClick={() => handleOnClick(urls.url)}
-                          >
-                            <img
-                              className="w-4 h-4 flex-none rounded-full"
-                              src={`https://www.google.com/s2/favicons?domain=${urls.url}&sz=16`}
-                            />
-
-                            <h3 className="inline-block text-xs font-medium text-gray-700 overflow-hidden overflow-ellipsis line-clamp-1">
-                              {activeCard.urls.length > 2 && urls.title.length > 10
-                                ? urls.title.trim().slice(0, 10) + '...'
-                                : urls.title.trim().slice(0, 25) + '...'}
-                            </h3>
-                          </button>
-                        ))}
-                      </>
-                    </div>
-                  </div>}
-                  
+    <div className="flex flex-col justify-center items-center w-[400px] max-h-[448px] bg-[#FCFCFD] mt-[8px]">
+      <div className="flex flex-col justify-center items-center w-[368px] h-[345px] bg-gray-100 rounded-lg px-[16px] py-[8px]">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-[25px]">
+          <div className="flex flex-col md:flex-row justify-center items-stretch gap-4 mx-auto">
+            {activeCard.cardType == 'DataCard' && <div className="bg-white rounded-lg shadow-lg p-3 px-5 bg-violet-50 flex flex-col justify-between min-h-[desiredMinHeight]">
+              <header className="relative flex items-center">
+                {activeCard.urls.map((urls, index) => (
+                  <div className="w-6 h-6 flex-none rounded-full border border-white border-spacing-4 fill-white">
+                    <img
+                      className="absolute w-6 h-6 flex-none rounded-full border-white border-2 fill-white"
+                      style={{ left: `${index * 1.3}rem` }}
+                      src={`https://www.google.com/s2/favicons?domain=${urls.url}&sz=24`}
+                    />
+                  </div>
+                ))}
+                <div className="flex flex-row ml-auto items-center">
+                  {/* <Arrow className="w-6 h-4 mr-1" /> */}
+                  <div className="flex font-inter text-gray-400 font-normal">
+                    {getDaysAgo(activeCard.date)}
+                  </div>
                 </div>
+              </header>
+
+              <div className="flex flex-col justify-center mt-1">
+                <blockquote className="text-gray-600 text-xs font-normal">
+                  {activeCard.content}
+                </blockquote>
+              </div>
+
+
+              <div className="flex flex-row w-full flex-wrap gap-2 self-stretch items-center justify-start pt-5">
+                <>
+                  {activeCard.urls.map((urls) => (
+                    <button
+                      className="flex items-center gap-2 rounded-3xl border border-gray-200 px-2 py-1 bg-gray-50"
+                      style={{
+                        backgroundColor: '#fff'
+                      }}
+                      onClick={() => handleOnClick(urls.url)}
+                    >
+                      <img
+                        className="w-4 h-4 flex-none rounded-full"
+                        src={`https://www.google.com/s2/favicons?domain=${urls.url}&sz=16`}
+                      />
+
+                      <h3 className="inline-block text-xs font-medium text-gray-700 overflow-hidden overflow-ellipsis line-clamp-1">
+                        {activeCard.urls.length > 2 && urls.title.length > 10
+                          ? urls.title.trim().slice(0, 10) + '...'
+                          : urls.title.trim().slice(0, 25) + '...'}
+                      </h3>
+                    </button>
+                  ))}
+                </>
+              </div>
+            </div>}
           </div>
         </div>
+        <ProgressBar progress={Math.floor(((totalCardCount - cards.length) / totalCardCount) * 100)} />
       </div>
       <div className="flex flex-row gap-2 my-[22px] mx-[24px]">
         <button
