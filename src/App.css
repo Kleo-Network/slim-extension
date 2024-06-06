@@ -1,38 +1,70 @@
-.App {
-  text-align: center;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'inter';
+  src: url('./assets/fonts/Inter-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'inter';
+  src: url('./assets/fonts/Inter-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'inter';
+  src: url('./assets/fonts/Inter-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'inter';
+  src: url('./assets/fonts/Inter-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'inter';
+  src: url('./assets/fonts/Inter-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'inter';
+  src: url('./assets/fonts/Inter-ExtraLight.ttf') format('truetype');
+  font-weight: 200;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'shoreline';
+  src: url('./assets/fonts/Shorelines-Script-Bold.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.color-empty {
+  fill: #ebedf0; /* Light gray, for empty tiles */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.color-scale-1 {
+  fill: #9be9a8; /* Light green */
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.color-scale-2 {
+  fill: #40c463; /* Medium green */
 }
 
-.App-link {
-  color: #61dafb;
+.color-scale-3 {
+  fill: #30a14e; /* Dark green */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.color-scale-4 {
+  fill: #216e39; /* Darker green */
+}
+
+.color-scale-5 {
+  fill: #164e63; /* Darkest green */
 }

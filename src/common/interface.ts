@@ -93,6 +93,7 @@ export interface fullUserData {
 export interface UserDataProps {
   user: UserData
   setUser: React.Dispatch<React.SetStateAction<UserData>>
+  slug: string
 }
 
 export interface PendingCard {

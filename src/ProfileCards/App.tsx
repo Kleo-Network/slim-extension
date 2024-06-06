@@ -1,62 +1,11 @@
 import { useState, useEffect } from 'react'
-// import Tick from '../assets/images/check.svg'
-// import Cross from '../assets/images/cross.svg'
 import CountdownTimer from './countdown'
-import { PendingCard, UserData } from '../common/interface'
+import { PendingCard, UserDataProps } from '../common/interface'
 import useFetch from '../common/hooks/useFetch'
 
-export default function App() {
+export default function App({ user, setUser, slug}: UserDataProps) {
 
   const emptyStringArray: string[] = []
-  const [slug, setSlug]= useState<string>('')
-  const [user, setUser] = useState<UserData>({
-    about: '',
-    badges: emptyStringArray,
-    content_tags: emptyStringArray,
-    identity_tags: emptyStringArray,
-    last_attested: Math.floor(Date.now() / 1000),
-    last_cards_marked: Math.floor(Date.now() / 1000),
-    name: 'Kleo User',
-    pfp: 'https://pbs.twimg.com/profile_images/1590877918015926272/Xl2Bd-X2_400x400.jpg',
-    profile_metadata: {},
-    settings: {},
-    slug: '',
-    stage: 1,
-    verified: false,
-    email: '',
-    token: ''
-  })
-
-  useEffect(() => {
-    chrome.storage.local.get('user_id', storageData => {
-      console.log(storageData.user_id);
-      if(storageData.user_id) {
-        setSlug(storageData.user_id.id)
-      }
-    });
-  }, []);
-
-  // to fetch user data
-  const GET_USER_DETAIL = 'user/get-user/{slug}'
-  const { fetchData: fetchUserData } = useFetch<UserData>()
-
-  function getUserDetails(slug: string) {
-    return GET_USER_DETAIL.replace('{slug}', slug)
-  }
-
-  useEffect(() => {
-    try {
-      fetchUserData(getUserDetails(slug), {
-        onSuccessfulFetch(data) {
-          if (data) {
-            setUser(data)
-          }
-        }
-      })
-    } catch (error) {
-      console.error('Error fetching data:', error)
-    }
-  }, [slug])
 
   const formatDate = (epoch: number): string => {
     const date = new Date(epoch * 1000) // Convert epoch to milliseconds
@@ -158,126 +107,121 @@ export default function App() {
   const user1 =
     'https://cdn.midjourney.com/bb411caf-06cd-4343-93e1-dfa1e1945a30/0_3.webp'
 
+  const getDaysAgo = (date: number) => {
+    const givenDate = new Date(date * 1000)
+    const givenDateNum:number = (new Date(date)).getTime()
+    const currentDate: number = (new Date()).getTime()
+    const differenceInTime = currentDate - givenDateNum
+    const differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24))
+
+    if (differenceInDays === 0) {
+      return 'Today'
+    } else if (differenceInDays === 1) {
+      return '1 day ago'
+    } else if (differenceInDays <= 30) {
+      return `${differenceInDays} days ago`
+    } else {
+      return `${givenDate.toLocaleString('default', {
+        month: 'long'
+      })} ${givenDate.getDate()}, ${givenDate.getFullYear()}`
+    }
+  }
+
   return (
-    <div className="flex flex-col w-full justify-center items-center min-w-[1200px] min-h-[400px]">
-      <div className="flex flex-col self-stretch rounded-lg border border-gray-400 w-3/5 mx-6 my-8">
-        <header className="flex flex-row gap-2 justify-between items-center px-6 py-5 font-medium border-b border-gray-200">
-          <div className="flex w-full justify-between items-center gap-2">
-            <div>
-              <h3 className="text-xl text-gray-900 flex-grow-0">
-                Publish Activity -{' '}
-                {activeCardList.length > 0 && formatDate(activeCard.date)}
-                {activeCardList.length <= 0 && cards.length > 0 && 'Other days'}
-              </h3>
-            </div>
-            <div className="flex items-center h-300 gap-2">
-              <select
-                className="text-sm w-44 px-2 py-2 text-violet-700 bg-violet-100 rounded-lg cursor-pointer"
-                value={selectedDate}
-                onChange={(e) => {
-                  setSelectedDate(e.target.value)
-                  filterCards(e.target.value)
-                }}
-              >
-                <option value="">All Dates</option>
-                {availableDates.map((date) => (
-                  <option key={date} value={date}>
-                    {date}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </header>
-        <div className="flex flex-col md:flex-row justify-between items-center p-6 bg-gray-300">
+    <>
+    {activeCardList.length > 0 ? (
+    <div className="flex flex-col justify-center items-center w-[400px] max-h-[300px] bg-[#FCFCFD]">
+      <div className="flex flex-col w-[368px] h-[345px] bg-gray-100 mt-16 rounded-lg">
+        <div className="flex flex-col md:flex-row justify-between items-center p-2">
           <div className="flex flex-col md:flex-row justify-center items-stretch p-6 gap-4 mx-auto">
-            {activeCardList.length > 0 ? (
-              <>
                 <div className="flex-grow">
-                  <div className="bg-white rounded-lg shadow-lg p-3 px-5 bg-violet-50 flex flex-col justify-between min-h-[desiredMinHeight]">
-                    <div className="flex items-center mt-3">
-                      <img
-                        src={user?.pfp}
-                        alt={user?.name}
-                        className="w-10 h-10 rounded-full mr-3"
-                      />
-                      <div>
-                        <h2 className="text-lg font-semibold text-violet-800">
-                          {user?.name}
-                        </h2>
-                        <p className="text-sm text-gray-500">@{user?.slug}</p>
+                  {activeCard.cardType == 'DataCard' && <div className="bg-white rounded-lg shadow-lg p-3 px-5 bg-violet-50 flex flex-col justify-between min-h-[desiredMinHeight]">
+                    <header className="relative flex items-center">
+                      {activeCard.urls.map((urls, index) => (
+                        <div className="w-6 h-6 flex-none rounded-full border border-white border-spacing-4 fill-white">
+                          <img
+                            className="absolute w-6 h-6 flex-none rounded-full border-white border-2 fill-white"
+                            style={{ left: `${index * 1.3}rem` }}
+                            src={`https://www.google.com/s2/favicons?domain=${urls.url}&sz=24`}
+                          />
+                        </div>
+                      ))}
+                      <div className="flex flex-row ml-auto items-center">
+                        {/* <Arrow className="w-6 h-4 mr-1" /> */}
+                        <div className="flex font-inter text-gray-400 font-normal">
+                          {getDaysAgo(activeCard.date)}
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex-1 flex flex-col justify-center flex-1">
-                      <blockquote className="text-gray-600 text-lg mt-4 pb-3">
+                    </header>
+
+                    <div className="flex flex-col justify-center mt-1">
+                      <blockquote className="text-gray-600 text-xs font-normal">
                         {activeCard.content}
                       </blockquote>
-
-                      <div className="flex flex-row flex-wrap gap-2 self-stretch items-center justify-start max-h-40">
-                        <>
-                          {activeCard.urls.map((urls) => (
-                            <button
-                              className="flex items-center  gap-2 rounded-lg border border-gray-200 px-2 py-1"
-                              style={{
-                                backgroundColor: '#fff'
-                              }}
-                              onClick={() => handleOnClick(urls.url)}
-                            >
-                              <img
-                                className="w-4 h-4 flex-none"
-                                src={`https://www.google.com/s2/favicons?domain=${urls.url}`}
-                              />
-
-                              <h3 className="text-sm font-medium text-gray-700">
-                                {urls.title}
-                              </h3>
-                            </button>
-                          ))}
-                        </>
-                      </div>
                     </div>
-                    <div>
-                      <div className="flex justify-between border-t py-2 items-center mt-4">
-                        <span className="text-sm text-gray-500">
-                          {formatDate(activeCard.date)}
-                        </span>
-                      </div>
+
+
+                    <div className="flex flex-row w-full flex-wrap gap-2 self-stretch items-center justify-start pt-5">
+                      <>
+                        {activeCard.urls.map((urls) => (
+                          <button
+                            className="flex items-center gap-2 rounded-3xl border border-gray-200 px-2 py-1 bg-gray-50"
+                            style={{
+                              backgroundColor: '#fff'
+                            }}
+                            onClick={() => handleOnClick(urls.url)}
+                          >
+                            <img
+                              className="w-4 h-4 flex-none rounded-full"
+                              src={`https://www.google.com/s2/favicons?domain=${urls.url}&sz=16`}
+                            />
+
+                            <h3 className="inline-block text-xs font-medium text-gray-700 overflow-hidden overflow-ellipsis line-clamp-1">
+                              {activeCard.urls.length > 2 && urls.title.length > 10
+                                ? urls.title.trim().slice(0, 10) + '...'
+                                : urls.title.trim().slice(0, 25) + '...'}
+                            </h3>
+                          </button>
+                        ))}
+                      </>
                     </div>
-                  </div>
+                  </div>}
+                  
                 </div>
-                <div className="flex-grow">
-                  <button
-                    onClick={() => removeCard(activeCard.id, true)}
-                    className="flex justify-center items-center mb-2 px-3 py-2 rounded-2xl bg-green-700 text-green-800 font-medium rounded hover:bg-green-800 w-full h-1/2"
-                  >
-                    <div className="w-8 stroke-white text-white">Publish a card</div>
-                  </button>
-                  <button
-                    onClick={() => removeCard(activeCard.id, false)}
-                    className="flex justify-center items-center px-10 py-4 bg-red-500 text-white text-md font-medium rounded-2xl hover:bg-red-800 w-full h-1/2"
-                  >
-                    <div className="w-8 stroke-white text-white">Discard a card</div>
-                  </button>
-                </div>
-              </>
-            ) : (
-              cards.length <= 0 && (
-                <div className="flex-grow">
-                  <div className="bg-white rounded-lg shadow-lg p-3 px-5 bg-violet-50 flex flex-col justify-between min-h-[desiredMinHeight]">
-                    <CountdownTimer
-                      endDate={convertEpochToISO(
-                        user.last_cards_marked + 86400
-                      )}
-                      isProfilePage={false}
-                    />
-                  </div>
-                </div>
-              )
-            )}
           </div>
         </div>
       </div>
-    </div>
+      <div className="flex flex-row gap-2 my-[22px] mx-[24px]">
+        <button
+          onClick={() => removeCard(activeCard.id, false)}
+          className="flex justify-center items-center w-[165px] px-3 py-2 rounded-lg bg-gray-100 text-[#363F72] font-semibold"
+        >
+          {/* <Cross className="w-8 stroke-white fill-white" /> */}
+          Delete
+        </button>
+        <button
+          onClick={() => removeCard(activeCard.id, true)}
+          className="flex justify-center items-center w-[165px] px-3 py-2 rounded-lg bg-violet-600 text-white font-semibold ml-[22px]"
+        >
+          {/* <Tick className="w-8 stroke-white fill-white" /> */}
+          Publish
+        </button>
+      </div>
+    </div>) : (
+      cards.length <= 0 && (
+        <div className="flex-grow">
+          <div className="bg-white rounded-lg shadow-lg p-3 px-5 bg-violet-50 flex flex-col justify-between min-h-[desiredMinHeight]">
+            <CountdownTimer
+              endDate={convertEpochToISO(
+                user.last_cards_marked + 86400
+              )}
+              isProfilePage={false}
+            />
+          </div>
+        </div>
+      )
+    )}
+    </>
   )
 }
 
