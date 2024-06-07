@@ -18,7 +18,7 @@ module.exports = {
                  {
                   loader: "ts-loader",
                    options: {
-                     compilerOptions: { noEmit: false },
+                    transpileOnly: true,
                     }
                   }],
                exclude: /node_modules/,
@@ -50,6 +50,10 @@ module.exports = {
         new CopyPlugin({
             patterns: [
                 { from: "manifest.json", to: "../manifest.json" },
+                {
+                    from: path.resolve('./src/assets'),
+                    to:  path.resolve('dist/assets')
+                },
                 {
                     from: path.resolve('./src/logo'),
                     to:  path.resolve('dist/logo')

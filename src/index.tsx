@@ -1,8 +1,22 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+// import React from 'react';
+// import { BrowserRouter } from 'react-router-dom'
+// import App from './App';
+// import './index.css'
+
+
+// rootDiv.render(
+//   <React.StrictMode>
+//     <BrowserRouter>
+//       <App />
+//     </BrowserRouter>
+//   </React.StrictMode>
+// );
+
+import React from 'react'
+import './App.css'
+import App from './App'
 import { BrowserRouter } from 'react-router-dom'
-import App from './ProfileCards/App';
-import './index.css'
+import ReactDOM from 'react-dom/client';
 
 const root = document.createElement("div")
 root.className = "container"
@@ -14,4 +28,4 @@ rootDiv.render(
       <App />
     </BrowserRouter>
   </React.StrictMode>
-);
+)

@@ -16,10 +16,17 @@ export interface UserData {
   token: any
 }
 
+export interface VisitCountMap {
+  category: string
+  count: number
+}
+
 interface PublishedCardMetadata {
-  activity: string
+  activity: string[] | VisitCountMap[]
   description: string
   entities: string[]
+  dateFrom?: number
+  dateTo?: number
 }
 
 interface PublishedCardUrls {
@@ -44,7 +51,7 @@ export enum CardType {
   MapCard = 'PlaceCard',
   TwitterCard = 'XCard'
 }
-interface Contribution {
+export interface Contribution {
   date: string
   count: number
 }
@@ -73,15 +80,26 @@ export interface TwitterCard {
   username: string
   pinned_tweet: string
   followers_count: number
-  following: number
+  following_count: number
   bio: string
   is_verified: boolean
 }
+
+interface UrlMetadata {
+  url: string,
+  caption: string
+}
+
+export interface InstagramCard {
+  urls: UrlMetadata[],
+  username: string
+}
+
 export interface StaticCard {
   cardType: string
   id: string
   last_connected: string
-  metadata: GitCard | CalendlyCard | MapCard | TwitterCard | TextCard
+  metadata: GitCard | CalendlyCard | MapCard | TwitterCard | TextCard | InstagramCard
 }
 
 export interface fullUserData {
@@ -93,6 +111,7 @@ export interface fullUserData {
 export interface UserDataProps {
   user: UserData
   setUser: React.Dispatch<React.SetStateAction<UserData>>
+  slug: string
 }
 
 export interface PendingCard {
