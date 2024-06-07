@@ -20,32 +20,29 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
     if (completed) {
       // Optionally, reset background color or perform another completion action
       return (
-        <div className="text-xl font-semibold">Time's up! Happy Event!</div>
+        <div className="text-xl font-semibold">Happy Event!</div>
       )
     } else {
       // Container for countdown units
       const timeUnit = (unit: number | string, label: string) => (
+        <>
         <div
           className={`flex flex-col items-center justify-center ${
             isProfilePage ? 'mx-2' : 'm-2'
           }`}
         >
           <div
-            className={`${
-              isProfilePage
-                ? 'w-8 h-8 bg-white text-violet-700'
-                : 'w-24 h-24 bg-violet-700 text-white'
-            }  flex items-center justify-center
-            ${
-              isProfilePage ? 'text-xs' : 'text-2xl'
-            } font-bold rounded shadow-lg transform transition duration-700 ease-in-out`}
+            className='w-9 h-10 bg-gray-100 text-gray-700 flex items-center justify-center
+            text-[15px] font-bold rounded shadow-lg transform transition duration-700 ease-in-out'
           >
             {unit}
           </div>
           {!isProfilePage && (
-            <div className="text-sm text-gray-700 mt-2">{label}</div>
+            <div className="text-[8px] font-normal text-gray-500 mt-2">{label}</div>
           )}
         </div>
+        {label !== "Seconds" && <img src='../assets/images/Colon.svg' className='w-2 h-2'/>}
+        </>
       )
 
       // Render a countdown with turning pages effect simulation
@@ -62,13 +59,8 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
 
   return (
     <div
-      className={`flex flex-col items-center justify-center ${
-        isProfilePage ? 'py-2' : 'p-4'
-      }`}
+      className={`flex flex-col items-center justify-center`}
     >
-      {!isProfilePage && (
-        <h1 className="text-2xl font-bold mb-4">New Cards Coming In...</h1>
-      )}
       <Countdown date={endDate} renderer={renderer} />
     </div>
   )

@@ -4,6 +4,7 @@ import { UserData } from './common/interface'
 import Navbar from './navbar/Navbar'
 import ProfileCards from './ProfileCards/App'
 import useFetch from './common/hooks/useFetch'
+import CardCreatedState from './ProfileCards/CardCreatedState'
 
 function App(): ReactElement {
   const emptyStringArray: string[] = []
@@ -35,7 +36,7 @@ function App(): ReactElement {
         setSlug(storageData.user_id.id)
       }
     });
-    navigate("/")
+    navigate("/cards")
   }, []);
 
   const GET_USER_DETAIL = 'user/get-user/{slug}'
@@ -71,8 +72,8 @@ function App(): ReactElement {
       
           <Routes>
             <Route
-              path="/"
-              element={<ProfileCards user={user} setUser={setUser}  slug={slug}/>}
+              path="/card-created"
+              element={<CardCreatedState/>}
             />
             <Route
               path="/cards"
