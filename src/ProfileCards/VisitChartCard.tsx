@@ -53,7 +53,7 @@ const VisitChartCard: React.FC<VisitMetadata> = ({ data, date }) => {
   }
 
   return (
-    <div className="flex flex-row justify-between items-center bg-gray-700 p-2 px-8 rounded-lg">
+    <div className="flex flex-row justify-between items-center bg-gray-700 p-2 px-8 rounded-lg mt-[20px]">
       <div className="flex flex-col gap-x-8">
         <div className='text-white font-semibold text-base mb-[15px]'>Tags Used </div>
         {sortedData.map((item, index) => (

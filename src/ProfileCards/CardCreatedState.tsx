@@ -20,7 +20,7 @@ export default function CardCreatedState() {
       <div className="flex flex-row gap-2 my-[22px] mx-[24px]">
         <button
           onClick={() => goBackToProfile()}
-          className="flex justify-center items-center w-[165px] px-3 py-2 rounded-lg bg-violet-600 text-white font-semibold ml-[22px]"
+          className="flex justify-center items-center w-[165px] h-[44px] px-3 py-2 rounded-lg bg-violet-600 text-white font-semibold ml-[22px]"
         >
             Go Back To Profile
         </button>
