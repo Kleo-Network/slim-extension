@@ -172,11 +172,24 @@ export default function App({ user, setUser, slug}: UserDataProps) {
   return (
     <>
     {activeCardList.length > 0 ? (
-    <div className="flex flex-col justify-center items-center w-[400px] max-h-[448px] bg-[#FCFCFD] mt-[8px]">
+    <div className="flex flex-col justify-center items-center w-[400px] max-h-[448px] bg-[#FCFCFD] mt-[16px]">
       <div className="flex flex-col justify-center items-center w-[368px] h-[345px] bg-gray-100 rounded-lg px-[16px] py-[8px]">
+        <div className='flex flex-row bg-white h-[38px] p-2 rounded-md items-center ml-auto mt-1'>
+          <div className='flex my-[5px] bg-violet-100 w-7 h-7 items-center justify-center rounded-md'>
+            <img src='../assets/images/KleoToken.svg' className='flex w-[24px] h-[24px]'/>
+          </div>
+          <div className='flex flex-row ml-2 mr-1'>
+            <div className='font-medium text-sm text-violet-700'>
+              {user.profile_metadata.kleo_token ? user.profile_metadata.kleo_token : 0}
+            </div>
+            <div className='flex font-light text-[10px] text-violet-500 ml-1 text-center items-center'>
+              KLEO
+            </div>
+          </div>
+        </div>
         <div className="flex flex-col md:flex-row justify-between items-center mb-[25px]">
           <div className="flex flex-col md:flex-row justify-center items-stretch gap-4 mx-auto">
-            {activeCard.cardType == 'DataCard' && <div className="bg-white rounded-lg shadow-lg p-3 px-5 bg-violet-50 flex flex-col justify-between min-h-[desiredMinHeight]">
+            {activeCard.cardType == 'DataCard' && <div className="bg-white rounded-lg shadow-lg p-3 px-5 bg-violet-50 flex flex-col justify-between min-h-[desiredMinHeight] mt-[20px]">
               <header className="relative flex items-center">
                 {activeCard.urls.map((urls, index) => (
                   <div className="w-6 h-6 flex-none rounded-full border border-white border-spacing-4 fill-white">
@@ -196,7 +209,7 @@ export default function App({ user, setUser, slug}: UserDataProps) {
               </header>
 
               <div className="flex flex-col justify-center mt-1">
-                <blockquote className="text-gray-600 text-xs font-normal">
+                <blockquote className="text-gray-600 text-base font-normal">
                   {activeCard.content}
                 </blockquote>
               </div>
@@ -207,9 +220,6 @@ export default function App({ user, setUser, slug}: UserDataProps) {
                   {activeCard.urls.map((urls) => (
                     <button
                       className="flex items-center gap-2 rounded-3xl border border-gray-200 px-2 py-1 bg-gray-50"
-                      style={{
-                        backgroundColor: '#fff'
-                      }}
                       onClick={() => handleOnClick(urls.url)}
                     >
                       <img
@@ -228,7 +238,7 @@ export default function App({ user, setUser, slug}: UserDataProps) {
               </div>
             </div>}
             {activeCard.cardType == 'DomainVisitCard' && (
-              <div className=" rounded-lg shadow-lg p-3 px-5 bg-[#42307D]  flex flex-col justify-between min-h-[200px] border border-white overflow-hidden bg-gradient-to-r from-violet-950 to-violet-900">
+              <div className=" rounded-lg shadow-lg p-3 px-5 bg-[#42307D]  flex flex-col justify-between min-h-[200px] border border-white overflow-hidden bg-gradient-to-r from-violet-950 to-violet-900 mt-[20px]">
                 {/* Header for card*/}
                 <header className="relative flex flex-row items-center mt-3 justify-between">
                   <div className="flex flex-row items-center bg-opacity-50 backdrop-blur-md bg-white py-1 px-2 rounded-3xl">
@@ -257,16 +267,18 @@ export default function App({ user, setUser, slug}: UserDataProps) {
               </div>
             )}
             {activeCard.cardType == 'VisitChartCard' && (
-        <VisitChartCard
-          data={activeCard.metadata.activity}
-          date={`${getDateAndMonth(activeCard.metadata.dateFrom)} - ${getDateAndMonth(
-            activeCard?.metadata?.dateTo
-          )}`}
-        />
-      )}
+              <VisitChartCard
+                data={activeCard.metadata.activity}
+                date={`${getDateAndMonth(activeCard.metadata.dateFrom)} - ${getDateAndMonth(
+                  activeCard?.metadata?.dateTo
+                )}`}
+              />
+            )}
           </div>
         </div>
-        <ProgressBar progress={Math.floor(((totalCardCount - cards.length) / totalCardCount) * 100)} />
+        <div className='mt-auto'>
+          <ProgressBar progress={Math.floor(((totalCardCount - cards.length) / totalCardCount) * 100)} />
+        </div>
       </div>
       <div className="flex flex-row gap-2 my-[22px] mx-[24px]">
         <button
@@ -278,7 +290,7 @@ export default function App({ user, setUser, slug}: UserDataProps) {
         </button>
         <button
           onClick={() => removeCard(activeCard.id, true)}
-          className="flex justify-center items-center w-[165px] px-3 py-2 rounded-lg bg-violet-600 text-white font-semibold ml-[22px]"
+          className="flex justify-center items-center w-[165px] h-[44px] px-3 py-2 rounded-lg bg-violet-600 text-white font-semibold"
         >
           <img src='../assets/images/check.svg' className='flex w-[13px] h-[9px] stroke-white fill-current mr-1'/>
           Publish
@@ -286,21 +298,34 @@ export default function App({ user, setUser, slug}: UserDataProps) {
       </div>
     </div>) : (
       <>
-      <div className="flex flex-col justify-center items-center w-[400px] min-h-[448px] bg-[#FCFCFD]">
-      <div className="flex flex-col justify-center items-center w-[380px] h-[428px] bg-gray-100 rounded-lg px-[16px] py-[8px]">
-        <img src="../assets/images/spaceCat.svg" className="w-[157px] h-[152px]"/>
-        <div className='text-gray-700 font-semibold text-[16px] mt-[4px]'>Yay! you are done for the day..</div>
-        <div className='text-gray-500 font-normal text-[11px] mt-[4px]'>Come back tomorrow for new cards</div>
-        <div className="bg-gray-50 rounded-lg shadow-lg flex flex-col justify-between min-w-[desiredMinWeight] min-h-[desiredMinHeight] mt-12">
-            <CountdownTimer
-              endDate={convertEpochToISO(
-                user.last_cards_marked + 86400
-              )}
-              isProfilePage={false}
-            />
+        <div className="flex flex-col justify-center items-center w-[400px] min-h-[448px] bg-[#FCFCFD]">
+          <div className="flex flex-col justify-start items-center w-[380px] h-[428px] bg-gray-100 rounded-lg px-[16px] pb-[8px]">
+            <div className='flex flex-row bg-white h-[38px] p-2 rounded-md items-center ml-auto mt-4'>
+              <div className='flex my-[5px] bg-violet-100 w-7 h-7 items-center justify-center rounded-md'>
+                <img src='../assets/images/KleoToken.svg' className='flex w-[24px] h-[24px]'/>
+              </div>
+              <div className='flex flex-row ml-2 mr-1'>
+                <div className='font-medium text-sm text-violet-700'>
+                  {user.profile_metadata.kleo_token ? user.profile_metadata.kleo_token : 0}
+                </div>
+                <div className='flex font-light text-[10px] text-violet-500 ml-1 text-center items-center'>
+                  KLEO
+                </div>
+              </div>
+            </div>
+            <img src="../assets/images/spaceCat.svg" className="w-[157px] h-[152px]"/>
+            <div className='text-gray-700 font-semibold text-[16px] mt-[4px]'>Yay! you are done for the day..</div>
+            <div className='text-gray-500 font-normal text-[11px] mt-[4px]'>Come back tomorrow for new cards</div>
+            <div className="bg-gray-50 rounded-lg shadow-lg flex flex-col justify-between min-w-[desiredMinWeight] min-h-[desiredMinHeight] mt-12">
+                <CountdownTimer
+                  endDate={convertEpochToISO(
+                    user.last_cards_marked + 86400
+                  )}
+                  isProfilePage={false}
+                />
+              </div>
           </div>
-      </div>
-      </div>
+        </div>  
       </>
     )}
     </>
