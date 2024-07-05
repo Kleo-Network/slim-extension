@@ -253,6 +253,9 @@ export default function App({ user, setUser, slug}: UserDataProps) {
                       {parseUrl(activeCard.urls[0].url)}
                     </div>
                   </div>
+                  <div className="flex flex-row items-center justify-center mr-1 ml-auto py-[2px] text-white font-inter text-sm font-normal">
+                    {activeCard.tags[2]}
+                  </div>
                   <img src="../assets/images/backFrameDataCard.svg" className="absolute right-0 top-0 w-[204px] h-[189px] translate-x-20 -translate-y-10 z-10" />
                 </header>
 
