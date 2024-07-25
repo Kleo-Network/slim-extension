@@ -122,6 +122,9 @@ export default function App({ user, setUser, slug}: UserDataProps) {
 
   const removeCard = (id: string, hasToPublished: boolean) => {
     console.log(id)
+    if (hasToPublished) {
+      user.profile_metadata.kleo_points++
+    }
 
     managePendingCardCreation(createPendingCard(slug), {
       method: 'POST',
@@ -180,7 +183,7 @@ export default function App({ user, setUser, slug}: UserDataProps) {
           </div>
           <div className='flex flex-row ml-2 mr-1'>
             <div className='font-medium text-sm text-violet-700'>
-              {user.profile_metadata.kleo_token ? user.profile_metadata.kleo_token : 0}
+              {user.profile_metadata.kleo_points ? user.profile_metadata.kleo_points : 0}
             </div>
             <div className='flex font-light text-[10px] text-violet-500 ml-1 text-center items-center'>
               KLEO
@@ -309,7 +312,7 @@ export default function App({ user, setUser, slug}: UserDataProps) {
               </div>
               <div className='flex flex-row ml-2 mr-1'>
                 <div className='font-medium text-sm text-violet-700'>
-                  {user.profile_metadata.kleo_token ? user.profile_metadata.kleo_token : 0}
+                  {user.profile_metadata.kleo_points ? user.profile_metadata.kleo_points : 0}
                 </div>
                 <div className='flex font-light text-[10px] text-violet-500 ml-1 text-center items-center'>
                   KLEO
