@@ -6,6 +6,7 @@ module.exports = {
 			colors: {
 				"gray-lightest": "#f9fafb",
 				"gray-subheader": "#98A2B3",
+				"gray-border": "#F2F4F7",
 				"primary-btn": {
 					100: "#D8B4FE",
 					200: "#C084F5",

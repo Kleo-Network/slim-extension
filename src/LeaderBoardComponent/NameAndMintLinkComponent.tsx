@@ -12,6 +12,7 @@ export const NameAndMintLinkComponent = ({
 	slug,
 	userName,
 }: NameAndMintLinkProps) => {
+	// TODO : Update once we have API.
 	const lastMintedDate = "April 26, 2024";
 
 	function getUserProfile() {
