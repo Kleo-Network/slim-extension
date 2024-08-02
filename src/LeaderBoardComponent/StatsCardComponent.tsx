@@ -40,7 +40,7 @@ export const StatsCardComponent = ({
 
 const StatComponent = ({ legend, count, imgSrc }: StateProps) => {
 	return (
-		<div className="h-full flex justify-start gap-2 py-2">
+		<div className="h-full flex justify-start gap-2 py-2 w-[101px]">
 			<div className="icon-container h-9 w-9 rounded-lg bg-gray-lightest flex justify-center items-center">
 				<img src={imgSrc} alt="" className="w-5 h-5" />
 			</div>

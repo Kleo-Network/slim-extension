@@ -4,19 +4,17 @@ interface NameAndMintLinkProps {
 		alt: string;
 	};
 	userName: string;
-	slug: string;
 }
 
 export const NameAndMintLinkComponent = ({
 	avatar,
-	slug,
 	userName,
 }: NameAndMintLinkProps) => {
 	// TODO : Update once we have API.
 	const lastMintedDate = "April 26, 2024";
 
 	function getUserProfile() {
-		window.open(`https://www.app.kleo.network/profileV2/${slug}`, "_blank");
+		window.open(`https://www.app.kleo.network/setting/`, "_blank");
 	}
 
 	function capitalizeWords(input: string): string {
