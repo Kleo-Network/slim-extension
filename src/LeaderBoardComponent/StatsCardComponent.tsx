@@ -22,13 +22,13 @@ export const StatsCardComponent = ({
 				count={kleoPoints}
 				imgSrc="../assets/images/statsImages/kleoPoints.svg"
 			/>
-			<div className="w-[1px] h-9 bg-gray-border "></div>
+			<div className="w-[1px] h-9 bg-gray-background "></div>
 			<StatComponent
 				legend="Rank"
 				count={rank}
 				imgSrc="../assets/images/statsImages/winnerCup.svg"
 			/>
-			<div className="w-[1px] h-9 bg-gray-border "></div>
+			<div className="w-[1px] h-9 bg-gray-background "></div>
 			<StatComponent
 				legend="Streak"
 				count={streak}
