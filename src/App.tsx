@@ -5,6 +5,7 @@ import Navbar from './navbar/Navbar'
 import ProfileCards from './ProfileCards/App'
 import useFetch from './common/hooks/useFetch'
 import CardCreatedState from './ProfileCards/CardCreatedState'
+import { LeaderBoardComponent } from './LeaderBoardComponent/LeaderBoardComponent'
 
 function App(): ReactElement {
   const emptyStringArray: string[] = []
@@ -36,7 +37,7 @@ function App(): ReactElement {
         setSlug(storageData.user_id.id)
       }
     });
-    navigate("/cards")
+    navigate("/profile")
   }, []);
 
   const GET_USER_DETAIL = 'user/get-user/{slug}'
@@ -78,6 +79,10 @@ function App(): ReactElement {
             <Route
               path="/cards"
               element={<ProfileCards user={user} setUser={setUser} slug={slug}/>}
+            />
+            <Route
+              path="/profile"
+              element={<LeaderBoardComponent user={user} slug={slug}/>}
             />
           </Routes>
         </div>
