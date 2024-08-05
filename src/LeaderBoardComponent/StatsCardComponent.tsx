@@ -16,7 +16,7 @@ export const StatsCardComponent = ({
 	streak,
 }: StatesCardProps) => {
 	return (
-		<div className="flex justify-between items-center h-[52px] w-full font-inter">
+		<div className="flex justify-evenly items-center h-[52px] w-full font-inter">
 			<StatComponent
 				legend="KLEO Points"
 				count={kleoPoints}
@@ -28,12 +28,12 @@ export const StatsCardComponent = ({
 				count={rank}
 				imgSrc="../assets/images/statsImages/winnerCup.svg"
 			/>
-			<div className="w-[1px] h-9 bg-gray-background "></div>
+			{/* <div className="w-[1px] h-9 bg-gray-background "></div>
 			<StatComponent
 				legend="Streak"
 				count={streak}
 				imgSrc="../assets/images/statsImages/fire.svg"
-			/>
+			/> */}
 		</div>
 	);
 };
