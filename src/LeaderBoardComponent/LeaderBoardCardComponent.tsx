@@ -6,7 +6,11 @@ interface LeaderBoardRowProps {
 	ppUrl: string;
 }
 
-export const LeaderBoardCardComponent = () => {
+interface LeaderBoardProps {
+	rank: string;
+}
+
+export const LeaderBoardCardComponent = ({ rank }: LeaderBoardProps) => {
 	return (
 		<div className="h-[270px] w-[367px] rounded-lg overflow-y-scroll relative scrollbar-thin scrollbar-webkit">
 			<div
@@ -19,7 +23,7 @@ export const LeaderBoardCardComponent = () => {
 				{/* TODO: Replace this with an Map when we have APIs ready. */}
 				<LeaderBoardRowComponent
 					isUserRow={true}
-					rank="141"
+					rank={rank}
 					userName="Prince Dalsaniya"
 					points="120"
 					ppUrl="../assets/images/statsImages/winnerCup.svg"
