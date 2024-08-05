@@ -6,6 +6,7 @@ import ProgressBar from '../progressBar/progressBar'
 import DataCardBody from './DataCardBody'
 import VisitChartCard from './VisitChartCard'
 import { useNavigate } from 'react-router-dom'
+import { convertEpochToISO } from '../common/utils'
 
 export default function App({ user, setUser, slug}: UserDataProps) {
 
@@ -336,10 +337,4 @@ export default function App({ user, setUser, slug}: UserDataProps) {
     )}
     </>
   )
-}
-
-export function convertEpochToISO(epoch: number): string {
-  const date = new Date(epoch * 1000) // Convert seconds to milliseconds
-  const isoString = date.toISOString() // Get ISO 8601 string in UTC timezone
-  return isoString
 }
