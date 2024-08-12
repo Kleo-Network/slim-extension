@@ -5,8 +5,7 @@ export default function CardCreatedState() {
     const navigate = useNavigate()
 
   const goBackToProfile = () => {
-    console.log("hello there");
-    navigate("/cards")
+    navigate("/profile")
   } 
 
   return (
