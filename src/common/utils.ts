@@ -1,3 +1,5 @@
+import { CardTypeToRender, PendingCard, PublishedCard } from "./interface";
+
 export function capitalizeWords(input: string): string {
 	return input
 		.split(" ") // Split the string into words
@@ -81,4 +83,43 @@ export const getDaysAgo = (date: number) => {
 			month: "long",
 		})} ${givenDate.getDate()}, ${givenDate.getFullYear()}`;
 	}
+};
+
+export function updateCardTypeToRenderInAllCards(
+	data: PendingCard[] | PublishedCard[]
+) {
+	const updatedCards = data.map((cardItem) => {
+		// Check if the card has URLs and if any URL includes 'youtu.be' or 'youtube.com'
+		const isYouTube =
+			cardItem.urls &&
+			cardItem.urls.some(
+				(url) =>
+					url.url.includes("youtu.be") ||
+					url.url.includes("youtube.com")
+			);
+
+		// Assign cardTypeToRender based on the check
+		return {
+			...cardItem, // Spread the existing card properties
+			cardTypeToRender: isYouTube
+				? CardTypeToRender.YT
+				: CardTypeToRender.DATA, // Assign type
+		};
+	});
+	return updatedCards;
+}
+
+export const extractThumbNailURL = (videoURL: string) => {
+	let videoId: string | undefined;
+	if (videoURL.includes("youtu.be")) {
+		// Handle the shortened youtu.be URLs
+		videoId = videoURL.split("youtu.be/")[1]?.split("?")[0];
+	} else if (videoURL.includes("youtube.com")) {
+		// Handle the standard youtube.com URLs
+		videoId = videoURL.split("v=")[1]?.split("&")[0];
+	}
+	const thumbUrl = videoId
+		? `https://img.youtube.com/vi/${videoId}/default.jpg`
+		: "";
+	return thumbUrl;
 };
