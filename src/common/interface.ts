@@ -140,4 +140,5 @@ export interface PendingCard {
 	tags: string[];
 	urls: PublishedCardUrls[];
 	cardTypeToRender?: CardTypeToRender;
+	stockImage?: string;
 }
