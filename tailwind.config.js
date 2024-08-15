@@ -3,11 +3,16 @@ module.exports = {
 	content: ["./src/**/*.{js,jsx,ts,tsx}"],
 	theme: {
 		extend: {
+			flexGrow: {
+				2: "2",
+				3: "3",
+			},
 			colors: {
 				"gray-lightest": "#f9fafb",
 				"gray-subheader": "#98A2B3",
 				"gray-background": "#F2F4F7",
-				"secondary": "#333F53",
+				secondary: "#333F53",
+				"yt-card": "#293056",
 				"primary-btn": {
 					100: "#D8B4FE",
 					200: "#C084F5",
