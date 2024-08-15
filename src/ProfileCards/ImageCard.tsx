@@ -12,7 +12,7 @@ export const ImageCard = ({ card }: ImageCardForPublishCardsProps) => {
 			style={{ backgroundImage: `url(${card.stockImage})` }}
 		>
 			{/* Header for card [UrlFavicons, DaysAgoString, Options] */}
-			<header className="relative flex items-center backdrop-blur-[2px] h-[46px]">
+			<header className="relative flex items-center backdrop-blur-sm h-[46px]">
 				{/* Map over all urls and show the favicon */}
 				{Array.from(
 					new Set(
@@ -38,7 +38,7 @@ export const ImageCard = ({ card }: ImageCardForPublishCardsProps) => {
 					</div>
 				))}
 
-				<div className="flex flex-row ml-auto items-center backdrop-blur-[2px]">
+				<div className="flex flex-row ml-auto items-center backdrop-blur-sm">
 					<div className="flex font-inter text-sm text-white font-normal">
 						{getDaysAgo(card.date)}
 					</div>
@@ -46,7 +46,7 @@ export const ImageCard = ({ card }: ImageCardForPublishCardsProps) => {
 			</header>
 
 			{/* Card Content */}
-			<div className="flex flex-col justify-center mt-1 backdrop-blur-[2px]">
+			<div className="flex flex-col justify-center mt-1 backdrop-blur-sm">
 				<blockquote className={`text-base font-normal text-white`}>
 					{card.content.length > 170
 						? `${card.content.slice(0, 170)}...`
