@@ -127,6 +127,7 @@ export enum CardTypeToRender {
 	YT = "YT",
 	IMAGE = "IMAGE",
 	DATA = "DATA",
+	PURPLE = "PURPLE",
 }
 
 export interface PendingCard {
