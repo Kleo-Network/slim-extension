@@ -136,7 +136,7 @@ export const extractThumbNailURL = (videoURL: string) => {
 		videoId = videoURL.split("v=")[1]?.split("&")[0];
 	}
 	const thumbUrl = videoId
-		? `https://img.youtube.com/vi/${videoId}/default.jpg`
+		? `https://img.youtube.com/vi/${videoId}/sddefault.jpg`
 		: "";
 	return thumbUrl;
 };
