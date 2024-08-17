@@ -1,6 +1,7 @@
 import { CardTypeToRender, PendingCard } from "../../common/interface";
 import { getDaysAgo, parseUrl } from "../../common/utils";
 import { YTCardImages } from "./YTCardImages";
+import ytLogo from "../../assets/images/ytLogo.png";
 
 interface YTCardProps {
 	activeCard: PendingCard;
@@ -18,24 +19,15 @@ export const YTCard = ({ activeCard }: YTCardProps) => {
 
 			{/* Header with favicons and date. */}
 			<header className="relative flex items-center">
-				{/* Map over all urls and show the favicon */}
-				{Array.from(
-					new Set(
-						activeCard.urls.map(
-							(url) =>
-								`https://www.google.com/s2/favicons?domain=${parseUrl(
-									url.url
-								)}&sz=40`
-						)
-					)
-				).map((iconUrl) => (
-					<div key={iconUrl} className="w-6 h-6 flex-none rounded-full">
-						<img
-							className={`absolute w-6 h-6 flex-none rounded-full`}
-							src={iconUrl}
-						/>
-					</div>
-				))}
+				<div
+					key={activeCard.urls[0].id}
+					className="w-6 h-6 flex-none rounded-full"
+				>
+					<img
+						className={`absolute w-6 h-6 flex-none rounded-full object-cover`}
+						src={"../assets/images/ytLogo.png"}
+					/>
+				</div>
 				<div className="flex flex-row ml-auto items-center">
 					<div className={`flex font-inter text-sm text-gray-400 font-normal`}>
 						{getDaysAgo(activeCard.date)}
