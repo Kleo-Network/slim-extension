@@ -9,6 +9,7 @@ interface ThumbnailProps {
 	videoUrl: string;
 	thumbUrl: string;
 	extraStyles?: string;
+	scale?: string;
 }
 
 export function YTCardImages({ card }: YTCardImagesProps) {
@@ -23,21 +24,21 @@ export function YTCardImages({ card }: YTCardImagesProps) {
 		switch (videoUrls.length) {
 			case 4:
 				return (
-					<div className="flex justify-between items-center w-full gap-2 h-full">
-						<div className="flex items-center justify-center w-4/5">
+					<div className="flex items-center w-full gap-2 h-full">
+						<div className="flex items-center justify-center flex-grow-2 w-4/5">
 							<Thumbnail
 								thumbUrl={videoUrls[0].thumbUrl}
 								videoUrl={videoUrls[0].videoUrl}
-								extraStyles="h-[120px]"
+								extraStyles="h-[120px] w-full"
 							/>
 						</div>
-						<div className="flex flex-col gap-2 grow">
+						<div className="flex flex-col gap-2 grow w-1/4 h-full">
 							{videoUrls.slice(1).map((url, index) => (
 								<Thumbnail
 									key={index}
 									thumbUrl={url.thumbUrl}
 									videoUrl={url.videoUrl}
-									extraStyles="h-[34px]"
+									extraStyles="h-[34px] w-full"
 								/>
 							))}
 						</div>
@@ -45,21 +46,22 @@ export function YTCardImages({ card }: YTCardImagesProps) {
 				);
 			case 3:
 				return (
-					<div className="flex justify-between items-center w-full gap-2 h-full">
-						<div className="flex items-center justify-center w-4/5">
+					<div className="flex items-center w-full gap-2 h-full">
+						<div className="flex items-center justify-center flex-grow-2 w-4/5">
 							<Thumbnail
 								thumbUrl={videoUrls[0].thumbUrl}
 								videoUrl={videoUrls[0].videoUrl}
-								extraStyles="h-[120px]"
+								extraStyles="h-[120px] w-full grow"
 							/>
 						</div>
-						<div className="flex flex-col gap-2 grow">
+						<div className="flex flex-col gap-2 grow w-1/4 h-full">
 							{videoUrls.slice(1).map((url, index) => (
 								<Thumbnail
 									key={index}
 									thumbUrl={url.thumbUrl}
 									videoUrl={url.videoUrl}
 									extraStyles="h-[56px]"
+									scale="scale-[1.3]"
 								/>
 							))}
 						</div>
@@ -67,23 +69,25 @@ export function YTCardImages({ card }: YTCardImagesProps) {
 				);
 			case 2:
 				return (
-					<div className="flex flex-wrap xl:flex-col justify-evenly items-center content-center w-full gap-2 h-full">
+					<div className="flex items-center w-full gap-2 h-full">
 						{videoUrls.map((url, index) => (
 							<Thumbnail
 								key={index}
 								thumbUrl={url.thumbUrl}
 								videoUrl={url.videoUrl}
+								extraStyles="w-1/2 h-full"
+								scale="scale-[1.3]"
 							/>
 						))}
 					</div>
 				);
 			case 1:
 				return (
-					<div className="flex flex-wrap justify-between items-center content-center w-full gap-2 h-full">
+					<div className="flex flex-wrap justify-center items-center content-center w-full gap-2 h-full">
 						<Thumbnail
 							thumbUrl={videoUrls[0].thumbUrl}
 							videoUrl={videoUrls[0].videoUrl}
-							extraStyles="h-[115px]"
+							extraStyles="w-full h-[115px]"
 						/>
 					</div>
 				);
@@ -93,19 +97,28 @@ export function YTCardImages({ card }: YTCardImagesProps) {
 	};
 
 	return (
-		<div className="h-[120px] w-full flex content-center">
+		<div className="h-[120px] w-full flex content-center rounded-lg overflow-hidden">
 			{renderThumbnails()}
 		</div>
 	);
 }
 
-function Thumbnail({ videoUrl, thumbUrl, extraStyles = "" }: ThumbnailProps) {
+function Thumbnail({
+	videoUrl,
+	thumbUrl,
+	extraStyles = "",
+	scale = "",
+}: ThumbnailProps) {
 	return (
-		<img
-			src={thumbUrl}
-			alt="Thumbnail"
-			className={`bg-gray-200 rounded-lg object-cover grow min-w-[20px] aspect-[1.7] cursor-pointer ${extraStyles}`}
-			onClick={() => window.open(videoUrl, "_blank")}
-		/>
+		<div
+			className={`rounded-lg overflow-hidden flex justify-center items-center ${extraStyles}`}
+		>
+			<img
+				src={thumbUrl}
+				alt="Thumbnail"
+				className={`bg-gray-200 rounded-lg object-cover transform w-full h-full cursor-pointer ${scale}`}
+				onClick={() => window.open(videoUrl, "_blank")}
+			/>
+		</div>
 	);
 }
