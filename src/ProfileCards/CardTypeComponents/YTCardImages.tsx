@@ -1,7 +1,7 @@
-import { PendingCard } from "../common/interface";
-import { extractThumbNailURL } from "../common/utils";
+import { PendingCard } from "../../common/interface";
+import { extractThumbNailURL } from "../../common/utils";
 
-interface YTCardProps {
+interface YTCardImagesProps {
 	card: PendingCard;
 }
 
@@ -10,7 +10,7 @@ interface ThumbnailProps {
 	extraStyles?: string;
 }
 
-export function YTCardBody({ card }: YTCardProps) {
+export function YTCardImages({ card }: YTCardImagesProps) {
 	const videoUrls: string[] = card.urls.map((url) =>
 		extractThumbNailURL(url.url)
 	);

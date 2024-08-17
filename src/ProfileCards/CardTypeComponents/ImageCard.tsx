@@ -1,5 +1,5 @@
-import { PendingCard } from "../common/interface";
-import { getDaysAgo, parseUrl } from "../common/utils";
+import { PendingCard } from "../../common/interface";
+import { getDaysAgo, parseUrl } from "../../common/utils";
 
 interface ImageCardForPublishCardsProps {
 	card: PendingCard;
@@ -48,8 +48,8 @@ export const ImageCard = ({ card }: ImageCardForPublishCardsProps) => {
 			{/* Card Content */}
 			<div className="flex flex-col justify-center mt-1 backdrop-blur-sm">
 				<blockquote className={`text-base font-normal text-white`}>
-					{card.content.length > 170
-						? `${card.content.slice(0, 170)}...`
+					{card.content.length > 120
+						? `${card.content.slice(0, 120)}...`
 						: card.content}
 				</blockquote>
 			</div>
