@@ -39,7 +39,7 @@ export const NameAndMintLinkComponent = ({
 				onClick={getUserProfile}
 				className="focus:outline-none text-white bg-primary-btn-500 hover:bg-primary-btn-600 focus:ring-4 focus:ring-primary-btn-100 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 min-w-fit max-w-fit"
 			>
-				Mint
+				Share
 			</button>
 		</div>
 	);

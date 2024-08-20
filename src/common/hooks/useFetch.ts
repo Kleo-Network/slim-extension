@@ -23,8 +23,8 @@ type FetchResponse<T> = {
   error: any
   fetchData: (url: string, options?: Options<T>) => void
 }
-export const baseUrl =
-  'http://127.0.0.1:5001/api/v1/core' || 'https://api.kleo.network/api/v1/core'
+export const baseUrl = 'http://127.0.0.1:5001/api/v1/core' ||
+  'https://api.kleo.network/api/v1/core'
 
 export enum FetchStatus {
   IDLE = 'idle',
@@ -41,8 +41,7 @@ function useFetch<T>(url?: string, options?: Options<T>): FetchResponse<T> {
   const [status, setStatus] = useState(FetchStatus.IDLE)
   const [error, setError] = useState(null)
   const [controller, setController] = useState<AbortController | null>(null)
-  const baseUrl =
-    // 'http://127.0.0.1:5001/api/v1/core' ||
+  const baseUrl = 'http://127.0.0.1:5001/api/v1/core' ||
     'https://api.kleo.network/api/v1/core'
 
   function getToken(): Promise<string> {

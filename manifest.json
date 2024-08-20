@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Kleo Connect",
-    "version": "1.1",
+    "version": "2.5",
     "description": "We are a social networking website which is based on top of Browsing History!",
     "background": {
       "service_worker": "background.js"
@@ -19,8 +19,7 @@
     "permissions": [
         "tabs",
         "history",
-        "storage",
-        "activeTab"
+        "storage"
       ],
     "content_scripts": [
       {
