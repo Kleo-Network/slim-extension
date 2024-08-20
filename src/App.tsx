@@ -5,11 +5,13 @@ import Navbar from './navbar/Navbar'
 import ProfileCards from './ProfileCards/App'
 import useFetch from './common/hooks/useFetch'
 import CardCreatedState from './ProfileCards/CardCreatedState'
+import RegisterKleo from './ProfileCards/RegisterKleo'
+
 import { LeaderBoardComponent } from './LeaderBoardComponent/LeaderBoardComponent'
 
 function App(): ReactElement {
   const emptyStringArray: string[] = []
-  const [slug, setSlug]= useState<string>('')
+  const [slug, setSlug] = useState<string>('')
   const [user, setUser] = useState<UserData>({
     about: '',
     badges: emptyStringArray,
@@ -33,7 +35,7 @@ function App(): ReactElement {
   useEffect(() => {
     chrome.storage.local.get('user_id', storageData => {
       console.log(storageData.user_id);
-      if(storageData.user_id) {
+      if (storageData.user_id) {
         setSlug(storageData.user_id.id)
       }
     });
@@ -62,31 +64,32 @@ function App(): ReactElement {
   }, [slug])
 
   return (
-      <div className="h-[500px] w-[400px] rounded-xl bg-gray-50">
-        <div className="flex flex-col font-inter self-stretch h-full rounded-xl">
-            <header className="flex flex-row self-stretch items-center">
-              <Navbar
-                avatar={{ src: user.pfp, alt: 'Profile' }}
-                slug={user.slug}
-              />
-            </header>
-      
-          <Routes>
-            <Route
-              path="/card-created"
-              element={<CardCreatedState/>}
-            />
-            <Route
-              path="/cards"
-              element={<ProfileCards user={user} setUser={setUser} slug={slug}/>}
-            />
-            <Route
-              path="/profile"
-              element={<LeaderBoardComponent user={user} slug={slug}/>}
-            />
-          </Routes>
-        </div>
-      </div>
+    <div className="h-[500px] w-[400px] rounded-xl bg-gray-50">
+      {slug !== '' ? <div className="flex flex-col font-inter self-stretch h-full rounded-xl">
+        <header className="flex flex-row self-stretch items-center">
+          <Navbar
+            avatar={{ src: user.pfp, alt: 'Profile' }}
+            slug={user.slug}
+          />
+        </header>
+
+        <Routes>
+          <Route
+            path="/card-created"
+            element={<CardCreatedState />}
+          />
+          <Route
+            path="/cards"
+            element={<ProfileCards user={user} setUser={setUser} slug={slug} />}
+          />
+          <Route
+            path="/profile"
+            element={<LeaderBoardComponent user={user} slug={slug} />}
+          />
+        </Routes>
+      </div> : <RegisterKleo />}
+
+    </div>
   )
 }
 
