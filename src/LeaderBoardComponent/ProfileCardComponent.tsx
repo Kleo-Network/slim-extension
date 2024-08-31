@@ -16,6 +16,7 @@ export const ProfileCardComponent = ({ user, rank }: ProfileCardProps) => {
 			<NameAndMintLinkComponent
 				avatar={{ src: user.pfp, alt: "Profile" }}
 				userName={user.name}
+				metaMaskAddress={user.metaMaskAddress || ""}
 			/>
 			<StatsCardComponent
 				kleoPoints={user.profile_metadata["kleo_points"]}

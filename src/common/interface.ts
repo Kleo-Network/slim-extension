@@ -14,6 +14,7 @@ export interface UserData {
 	verified: boolean;
 	email: string;
 	token: any;
+	metaMaskAddress?: string;
 }
 
 export interface VisitCountMap {

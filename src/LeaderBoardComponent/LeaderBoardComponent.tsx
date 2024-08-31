@@ -44,12 +44,12 @@ export const LeaderBoardComponent = ({ slug, user }: LeaderBoardProps) => {
 		// leaderBoard Page Container
 		<div className="h-[448px] bg-gray-lightest p-4 flex flex-col gap-4">
 			<ProfileCardComponent user={user} rank={rank} />
-			<LeaderBoardCardComponent
+			{/* <LeaderBoardCardComponent
 				rank={rank}
 				name={user.name}
 				points={user.profile_metadata["kleo_points"]}
 				ppUrl={user.pfp}
-			/>
+			/> */}
 		</div>
 	);
 };
