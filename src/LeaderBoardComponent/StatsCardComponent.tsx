@@ -2,6 +2,7 @@ interface StatesCardProps {
 	kleoPoints: string;
 	streak: string;
 	rank: string;
+	totalUserCount: string;
 }
 
 interface StateProps {
@@ -13,6 +14,7 @@ interface StateProps {
 export const StatsCardComponent = ({
 	kleoPoints,
 	rank,
+	totalUserCount,
 	streak,
 }: StatesCardProps) => {
 	return (
@@ -25,7 +27,7 @@ export const StatsCardComponent = ({
 			<div className="w-[1px] h-9 bg-gray-background "></div>
 			<StatComponent
 				legend="Rank"
-				count={rank}
+				count={`${rank}/${totalUserCount}`}
 				imgSrc="../assets/images/statsImages/winnerCup.svg"
 			/>
 			{/* <div className="w-[1px] h-9 bg-gray-background "></div>
@@ -46,9 +48,7 @@ const StatComponent = ({ legend, count, imgSrc }: StateProps) => {
 			</div>
 			<div className="flex flex-col h-full justify-center">
 				<p className="font-semibold text-sm">{count}</p>
-				<p className="text-gray-subheader font-medium text-[8px]">
-					{legend}
-				</p>
+				<p className="text-gray-subheader font-medium text-[8px]">{legend}</p>
 			</div>
 		</div>
 	);

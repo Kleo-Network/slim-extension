@@ -21,7 +21,7 @@ const GET_USER_RANK = "user/rank/{slug}";
 export const LeaderBoardComponent = ({ slug, user }: LeaderBoardProps) => {
 	const { fetchData: fetchUserRank } = useFetch();
 
-	const [rank, setRank] = useState("0");
+	const [rank, setRank] = useState({ rank: "0", totalUsers: "0" });
 
 	useEffect(() => {
 		if (!user || !user.slug) {
@@ -35,7 +35,10 @@ export const LeaderBoardComponent = ({ slug, user }: LeaderBoardProps) => {
 		fetchUserRank(updatedGetUserRankUrl, {
 			onSuccessfulFetch(data) {
 				const typedData = data as IGetUserRankResponse;
-				setRank(typedData["rank"].toString());
+				setRank({
+					rank: typedData["rank"].toString(),
+					totalUsers: typedData["total_users"].toString(),
+				});
 			},
 		});
 	}, [user, user.slug]);

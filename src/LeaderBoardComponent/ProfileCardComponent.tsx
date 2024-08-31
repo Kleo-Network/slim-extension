@@ -4,7 +4,10 @@ import { StatsCardComponent } from "./StatsCardComponent";
 
 interface ProfileCardProps {
 	user: UserData;
-	rank: string;
+	rank: {
+		rank: string;
+		totalUsers: string;
+	};
 }
 
 export const ProfileCardComponent = ({ user, rank }: ProfileCardProps) => {
@@ -20,7 +23,8 @@ export const ProfileCardComponent = ({ user, rank }: ProfileCardProps) => {
 			/>
 			<StatsCardComponent
 				kleoPoints={user.profile_metadata["kleo_points"]}
-				rank={rank}
+				rank={rank.rank}
+				totalUserCount={rank.totalUsers}
 				streak={streak}
 			/>
 		</div>
