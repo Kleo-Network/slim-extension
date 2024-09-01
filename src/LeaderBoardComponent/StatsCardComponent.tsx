@@ -3,6 +3,7 @@ interface StatesCardProps {
 	streak: string;
 	rank: string;
 	totalUserCount: string;
+	qualityPercentage: string;
 }
 
 interface StateProps {
@@ -15,6 +16,7 @@ export const StatsCardComponent = ({
 	kleoPoints,
 	rank,
 	totalUserCount,
+	qualityPercentage,
 	streak,
 }: StatesCardProps) => {
 	return (
@@ -30,12 +32,12 @@ export const StatsCardComponent = ({
 				count={`${rank}/${totalUserCount}`}
 				imgSrc="../assets/images/statsImages/winnerCup.svg"
 			/>
-			{/* <div className="w-[1px] h-9 bg-gray-background "></div>
+			<div className="w-[1px] h-9 bg-gray-background "></div>
 			<StatComponent
-				legend="Streak"
-				count={streak}
-				imgSrc="../assets/images/statsImages/fire.svg"
-			/> */}
+				legend="Quality"
+				count={qualityPercentage + "%"}
+				imgSrc="../assets/images/statsImages/qualityPercent.png"
+			/>
 		</div>
 	);
 };

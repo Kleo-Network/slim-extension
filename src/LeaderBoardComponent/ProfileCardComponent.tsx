@@ -8,9 +8,14 @@ interface ProfileCardProps {
 		rank: string;
 		totalUsers: string;
 	};
+	qualityPercentage: string;
 }
 
-export const ProfileCardComponent = ({ user, rank }: ProfileCardProps) => {
+export const ProfileCardComponent = ({
+	user,
+	rank,
+	qualityPercentage,
+}: ProfileCardProps) => {
 	// TODO : Update once we have API.
 	const streak = "21";
 
@@ -26,6 +31,7 @@ export const ProfileCardComponent = ({ user, rank }: ProfileCardProps) => {
 				rank={rank.rank}
 				totalUserCount={rank.totalUsers}
 				streak={streak}
+				qualityPercentage={qualityPercentage}
 			/>
 		</div>
 	);

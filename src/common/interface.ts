@@ -14,7 +14,9 @@ export interface UserData {
 	verified: boolean;
 	email: string;
 	token: any;
+	// TODO: Make them required from optional once implemented.
 	metaMaskAddress?: string;
+	qualityPercentage?: string;
 }
 
 export interface VisitCountMap {

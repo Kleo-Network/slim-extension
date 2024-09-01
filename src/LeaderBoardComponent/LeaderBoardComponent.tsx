@@ -46,7 +46,12 @@ export const LeaderBoardComponent = ({ slug, user }: LeaderBoardProps) => {
 	return (
 		// leaderBoard Page Container
 		<div className="h-[448px] bg-gray-lightest p-4 flex flex-col gap-4">
-			<ProfileCardComponent user={user} rank={rank} />
+			<ProfileCardComponent
+				user={user}
+				rank={rank}
+				// TODO: Update the Default Quality once we have API updated.
+				qualityPercentage={user.qualityPercentage || "90"}
+			/>
 			{/* <LeaderBoardCardComponent
 				rank={rank}
 				name={user.name}
