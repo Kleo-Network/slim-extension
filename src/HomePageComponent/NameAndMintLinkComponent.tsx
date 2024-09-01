@@ -19,7 +19,7 @@ export const NameAndMintLinkComponent = ({
 	// TODO : Update once we have API.
 	const lastMintedDate = "April 26, 2024";
 	// TODO: Remove this dummy value.
-	// metaMaskAddress = "0x573aFF24788A7c28dE5E94C945e7b46a6f16f7C1";
+	metaMaskAddress = "0x573aFF24788A7c28dE5E94C945e7b46a6f16f7C1";
 	const hasMetaMaskAddress = !!metaMaskAddress;
 
 	function getUserProfile() {

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import useFetch from "../common/hooks/useFetch";
 import { UserData } from "../common/interface";
-import { LeaderBoardCardComponent } from "./LeaderBoardCardComponent";
 import { ProfileCardComponent } from "./ProfileCardComponent";
 
 interface LeaderBoardProps {
@@ -18,7 +17,7 @@ interface IGetUserRankResponse {
 
 const GET_USER_RANK = "user/rank/{slug}";
 
-export const LeaderBoardComponent = ({ slug, user }: LeaderBoardProps) => {
+export const HomePageComponent = ({ slug, user }: LeaderBoardProps) => {
 	const { fetchData: fetchUserRank } = useFetch();
 
 	const [rank, setRank] = useState({ rank: "0", totalUsers: "0" });

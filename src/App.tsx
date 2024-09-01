@@ -1,13 +1,12 @@
 import { ReactElement, useEffect, useState } from 'react'
-import { Route, Routes, Navigate, Link, useNavigate } from 'react-router-dom'
+import { Route, Routes, useNavigate } from 'react-router-dom'
 import { UserData } from './common/interface'
+import { HomePageComponent } from './HomePageComponent/HomePageComponent'
 import Navbar from './navbar/Navbar'
 import ProfileCards from './ProfileCards/App'
 import useFetch from './common/hooks/useFetch'
 import CardCreatedState from './ProfileCards/CardCreatedState'
 import RegisterKleo from './ProfileCards/RegisterKleo'
-
-import { LeaderBoardComponent } from './LeaderBoardComponent/LeaderBoardComponent'
 
 function App(): ReactElement {
   const emptyStringArray: string[] = []
@@ -84,7 +83,7 @@ function App(): ReactElement {
           />
           <Route
             path="/profile"
-            element={<LeaderBoardComponent user={user} slug={slug} />}
+            element={<HomePageComponent user={user} slug={slug} />}
           />
         </Routes>
       </div> : <RegisterKleo />}

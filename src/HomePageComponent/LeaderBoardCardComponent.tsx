@@ -39,9 +39,9 @@ export const LeaderBoardCardComponent = ({
 		error: leaderBoardError,
 	} = useFetch();
 
-	const [leaderBoard, setLeaderBoard] = useState<
-		IGetLeaderBoardRowResponse[]
-	>([]);
+	const [leaderBoard, setLeaderBoard] = useState<IGetLeaderBoardRowResponse[]>(
+		[]
+	);
 
 	useEffect(() => {
 		fetchLeaderBoardUsers(GET_LEADER_BOARD_USERS, {
@@ -130,8 +130,7 @@ export const LeaderBoardCardComponent = ({
 								userName={capitalizeWords(userData.name)}
 								points={userData.kleo_points.toString()}
 								ppUrl={
-									userData.pfp ||
-									"../assets/images/statsImages/kleoPoints.svg"
+									userData.pfp || "../assets/images/statsImages/kleoPoints.svg"
 								}
 							/>
 						))}
@@ -152,9 +151,7 @@ const LeaderBoardRowComponent = ({
 	return (
 		<div
 			className={`h-[44px] w-[330px] rounded-lg px-4 py-2 flex justify-between items-center  ${
-				isUserRow
-					? "bg-secondary text-white"
-					: "bg-white text-secondary"
+				isUserRow ? "bg-secondary text-white" : "bg-white text-secondary"
 			}`}
 		>
 			<div className="flex items-center align-middle justify-between gap-2 font-medium text-xs">
