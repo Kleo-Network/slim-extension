@@ -155,8 +155,18 @@ const extractVideoId = (url: string): string | undefined => {
 };
 
 export function truncateText(text: string, maxLength: number) {
-	if (text.length > maxLength) {
-		return text.substring(0, maxLength - 3) + "...";
+	const textLength = text.length;
+
+	if (textLength > maxLength) {
+		// Calculate the number of characters to show from the start
+		const charsToShowFromStart = maxLength - 8;
+
+		// Get the start and end parts of the string
+		const startPart = text.substring(0, charsToShowFromStart);
+		const endPart = text.substring(textLength - 5);
+
+		return `${startPart}...${endPart}`;
 	}
+
 	return text;
 }
