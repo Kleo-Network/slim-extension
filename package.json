@@ -11,15 +11,16 @@
 		"@types/node": "^16.18.96",
 		"@types/react": "^18.2.79",
 		"@types/react-dom": "^18.2.25",
+		"chart.js": "4.4.4",
+		"chartjs-plugin-datalabels": "^2.2.0",
 		"chroma-js": "^2.4.2",
 		"react": "^18.2.0",
+		"react-chartjs-2": "5.2.0",
 		"react-dom": "^18.2.0",
 		"react-metamask-avatar": "^2.0.9",
 		"react-scripts": "5.0.1",
 		"typescript": "^4.9.5",
-		"web-vitals": "^2.1.4",
-		"chart.js": "4.4.4",
-		"react-chartjs-2": "5.2.0"
+		"web-vitals": "^2.1.4"
 	},
 	"scripts": {
 		"build": "webpack --progress --config webpack.config.js",
