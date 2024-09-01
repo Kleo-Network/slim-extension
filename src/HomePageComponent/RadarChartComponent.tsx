@@ -30,8 +30,11 @@ const mockLabels = [
 	"Coding",
 	"Cycling",
 	"Running",
+	"Coding",
+	"Cycling",
+	"Running",
 ];
-const mockValues = [35, 70, 55, 80, 60, 45, 90];
+const mockValues = [35, 70, 55, 80, 60, 45, 90, 60, 45, 90.34];
 
 export const RadarChartComponent = () => {
 	const chartRef = useRef<any>(null);
@@ -39,6 +42,9 @@ export const RadarChartComponent = () => {
 	// State to hold the radar chart data
 	const [radarChartData, setRadarChartData] = useState(RadarChartData);
 	const [isLoading, setIsLoading] = useState(true);
+	const [highestLabel, setHighestLabel] = useState("");
+	const [highestValue, setHighestValue] = useState(-1);
+	const [highestValueIndex, setHighestValueIndex] = useState(-1);
 
 	useEffect(() => {
 		// Simulating API call with mock data
@@ -59,13 +65,30 @@ export const RadarChartComponent = () => {
 		}, 1000); // Simulate delay for API response
 	}, []);
 
+	useEffect(() => {
+		if (!isLoading) {
+			const index = radarChartData.datasets[0].data.indexOf(
+				Math.max(...radarChartData.datasets[0].data)
+			);
+			setHighestValueIndex(index);
+			setHighestValue(radarChartData.datasets[0].data[index]);
+			setHighestLabel(radarChartData.labels[index]);
+		}
+	}, [radarChartData, isLoading]);
+
 	return (
 		<div className="h-[270px] w-[367px] rounded-lg flex flex-col justify-between items-center bg-primary-btn-100/20">
-			<div
-				className="h-11 py-3 px-4 text-base font-medium rounded-lg rounded-b-none text-secondary text-center"
-				style={{ width: "inherit" }}
-			>
-				Activity Chart
+			<div className="flex flex-col justify-center items-center py-1 px-4 text-sm font-medium rounded-lg rounded-b-none text-secondary">
+				<div className="" style={{ width: "inherit" }}>
+					Activity Chart
+				</div>
+				<div className="text-xs font-normal">
+					{isLoading
+						? "Loading..."
+						: `${highestLabel ? highestLabel : "N/A"} contributes ${
+								highestValue ? highestValue : "N/A"
+						  } to your Rank.`}
+				</div>
 			</div>
 			<div className="flex-1 flex justify-center items-center">
 				{isLoading && (
