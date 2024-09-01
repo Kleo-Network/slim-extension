@@ -1,5 +1,3 @@
-import { Align, Anchor } from "chartjs-plugin-datalabels/types/options";
-
 export const RadarChartOptions = {
 	responsive: true,
 	maintainAspectRatio: false,
@@ -30,19 +28,11 @@ export const RadarChartOptions = {
 	},
 	plugins: {
 		legend: {
-			display: false,
+			display: false, // Hide the legend
 		},
-		// Show Values at the point itself.
-		datalabels: {
-			display: true, // Enable datalabels plugin to display values
-			color: "rgba(107, 33, 168, 1)", // Custom color for the data labels
-			font: {
-				size: 10,
-			},
-			anchor: "end" as Anchor, // Position label relative to the point
-			align: "start" as Align, // Align the label above the point
-			offset: 5, // Adds a small gap between the point and the label
-			formatter: (value: number) => value.toFixed(0), // Formatter to display the value without decimals
+		point: {
+			radius: "10",
+			hoverRadius: 10,
 		},
 	},
 };

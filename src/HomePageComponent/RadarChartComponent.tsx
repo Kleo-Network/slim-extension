@@ -1,7 +1,6 @@
 // RadarChartComponent.tsx
 import { useEffect, useRef, useState } from "react";
 import { Radar } from "react-chartjs-2";
-import ChartDataLabels from "chartjs-plugin-datalabels";
 import {
 	Chart as ChartJS,
 	RadialLinearScale,
@@ -20,8 +19,7 @@ ChartJS.register(
 	LineElement,
 	Filler,
 	Tooltip,
-	Legend,
-	ChartDataLabels
+	Legend
 );
 
 const mockLabels = [
@@ -32,11 +30,8 @@ const mockLabels = [
 	"Coding",
 	"Cycling",
 	"Running",
-	"Coding",
-	"Cycling",
-	"Running",
 ];
-const mockValues = [35, 70, 55, 80, 60, 45, 90, 60, 45, 90];
+const mockValues = [35, 70, 55, 80, 60, 45, 90];
 
 export const RadarChartComponent = () => {
 	const chartRef = useRef<any>(null);
