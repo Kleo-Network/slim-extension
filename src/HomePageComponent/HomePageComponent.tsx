@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import useFetch from "../common/hooks/useFetch";
 import { UserData } from "../common/interface";
 import { ProfileCardComponent } from "./ProfileCardComponent";
+import { RadarChartComponent } from "./RadarChartComponent";
 
 interface LeaderBoardProps {
 	slug: string;
@@ -51,6 +52,7 @@ export const HomePageComponent = ({ slug, user }: LeaderBoardProps) => {
 				// TODO: Update the Default Quality once we have API updated.
 				qualityPercentage={user.qualityPercentage || "90"}
 			/>
+			<RadarChartComponent />
 			{/* <LeaderBoardCardComponent
 				rank={rank}
 				name={user.name}
