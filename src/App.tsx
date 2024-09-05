@@ -1,17 +1,17 @@
-import { ReactElement, useEffect, useState } from 'react'
-import { Route, Routes, Navigate, Link, useNavigate } from 'react-router-dom'
-import { UserData } from './common/interface'
-import Navbar from './navbar/Navbar'
-import ProfileCards from './ProfileCards/App'
-import useFetch from './common/hooks/useFetch'
-import CardCreatedState from './ProfileCards/CardCreatedState'
-import RegisterKleo from './ProfileCards/RegisterKleo'
+import { ReactElement, useEffect, useState } from 'react';
+import { Route, Routes, Navigate, Link, useNavigate } from 'react-router-dom';
+import { UserData } from './common/interface';
+import Navbar from './navbar/Navbar';
+import ProfileCards from './ProfileCards/App';
+import useFetch from './common/hooks/useFetch';
+import CardCreatedState from './ProfileCards/CardCreatedState';
+import RegisterKleo from './ProfileCards/RegisterKleo';
 
-import { LeaderBoardComponent } from './LeaderBoardComponent/LeaderBoardComponent'
+import { LeaderBoardComponent } from './LeaderBoardComponent/LeaderBoardComponent';
 
 function App(): ReactElement {
-  const emptyStringArray: string[] = []
-  const [slug, setSlug] = useState<string>('')
+  const emptyStringArray: string[] = [];
+  const [slug, setSlug] = useState<string>('');
   const [user, setUser] = useState<UserData>({
     about: '',
     badges: emptyStringArray,
@@ -27,26 +27,24 @@ function App(): ReactElement {
     stage: 1,
     verified: false,
     email: '',
-    token: ''
-  })
-  const navigate = useNavigate()
-
+    token: '',
+  });
+  const navigate = useNavigate();
 
   useEffect(() => {
-    chrome.storage.local.get('user_id', storageData => {
-      console.log(storageData.user_id);
+    chrome.storage.local.get('user_id', (storageData) => {
       if (storageData.user_id) {
-        setSlug(storageData.user_id.id)
+        setSlug(storageData.user_id.id);
       }
     });
-    navigate("/profile")
+    navigate('/home');
   }, []);
 
-  const GET_USER_DETAIL = 'user/get-user/{slug}'
-  const { fetchData: fetchUserData } = useFetch<UserData>()
+  const GET_USER_DETAIL = 'user/get-user/{slug}';
+  const { fetchData: fetchUserData } = useFetch<UserData>();
 
   function getUserDetails(slug: string) {
-    return GET_USER_DETAIL.replace('{slug}', slug)
+    return GET_USER_DETAIL.replace('{slug}', slug);
   }
 
   useEffect(() => {
@@ -54,43 +52,34 @@ function App(): ReactElement {
       fetchUserData(getUserDetails(slug), {
         onSuccessfulFetch(data) {
           if (data) {
-            setUser(data)
+            setUser(data);
           }
-        }
-      })
+        },
+      });
     } catch (error) {
-      console.error('Error fetching data:', error)
+      console.error('Error fetching data:', error);
     }
-  }, [slug])
+  }, [slug]);
 
   return (
     <div className="h-[500px] w-[400px] rounded-xl bg-gray-50">
-      {slug !== '' ? <div className="flex flex-col font-inter self-stretch h-full rounded-xl">
-        <header className="flex flex-row self-stretch items-center">
-          <Navbar
-            avatar={{ src: user.pfp, alt: 'Profile' }}
-            slug={user.slug}
-          />
-        </header>
+      {slug !== '' ? (
+        <div className="flex flex-col font-inter self-stretch h-full rounded-xl">
+          <header className="flex flex-row self-stretch items-center">
+            <Navbar avatar={{ src: user.pfp, alt: 'Profile' }} slug={user.slug} />
+          </header>
 
-        <Routes>
-          <Route
-            path="/card-created"
-            element={<CardCreatedState />}
-          />
-          <Route
-            path="/cards"
-            element={<ProfileCards user={user} setUser={setUser} slug={slug} />}
-          />
-          <Route
-            path="/profile"
-            element={<LeaderBoardComponent user={user} slug={slug} />}
-          />
-        </Routes>
-      </div> : <RegisterKleo />}
-
+          <Routes>
+            <Route path="/card-created" element={<CardCreatedState />} />
+            <Route path="/cards" element={<ProfileCards user={user} setUser={setUser} slug={slug} />} />
+            <Route path="/home" element={<LeaderBoardComponent user={user} slug={slug} />} />
+          </Routes>
+        </div>
+      ) : (
+        <RegisterKleo />
+      )}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
