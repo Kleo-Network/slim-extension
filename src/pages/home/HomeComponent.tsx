@@ -1,4 +1,7 @@
+import { MetaMaskAvatar } from 'react-metamask-avatar';
+import { KLEO_XP, MOCK_USER } from '../../common/constants';
 import { UserData } from '../../common/interface';
+import { convertTimeStampToDateString, truncateText } from '../../common/utils';
 
 interface HomeComponentProps {
   user: UserData;
@@ -7,20 +10,33 @@ interface HomeComponentProps {
 const kleoCoinInContainerPath = '../assets/images/homeImages/kleoCoinInContainer.svg';
 
 export const HomeComponent = ({ user }: HomeComponentProps) => {
+  user = MOCK_USER;
+
   return (
-    <div className="h-full w-full bg-gray-blue p-4">
-      {/* Name + Kleo Points top bar */}
-      <div className="flex justify-between items-center w-full h-[42px] bg-gray-600">
-        <div className=""></div>
+    <div className="h-full w-full bg-gray-blue p-4 flex gap-4">
+      {/* Name + Kleo Points Top-bar */}
+      <div className="flex justify-between items-center w-full h-[42px]">
+        <div className="flex flex-1 justify-start items-center gap-2 h-full mr-8">
+          {/* <img src={pfp} alt="Profile Picture" className="size-9 rounded-full" /> */}
+          <MetaMaskAvatar address={user.slug} size={36} />
+          <div className="flex flex-col items-start justify-center h-full w-fit">
+            <div className="font-semibold text-base text-gray-700">{truncateText(user.slug, 20)}</div>
+            <div className="font-normal text-[10px] leading-[18px] text-gray-500">
+              Last minted on {convertTimeStampToDateString(user.last_minted)}
+            </div>
+          </div>
+        </div>
         {/* Button at the right end */}
-        <div className="h-9 bg-white w-fit rounded-lg p-[6px] flex items-center justify-normal gap-2">
+        <div className="h-9 bg-white w-max rounded-lg p-[6px] flex items-center justify-normal gap-2">
           <img src={kleoCoinInContainerPath} className="flex w-[24px] h-[24px]" />
-          <div className="text-primary-btn-500 flex gap-1 mt-1">
-            <span className="font-semibold text-sm">123</span>
-            <span className="font-normal text-[8px] leading-6">KLEO XP</span>
+          <div className="text-primary-btn-500 flex gap-1 mt-1 w-max">
+            <span className="font-semibold text-sm w-max">{user.kleo_points}</span>
+            <span className="font-normal text-[8px] leading-6 w-max">{KLEO_XP}</span>
           </div>
         </div>
       </div>
+      {/* Activity Cart Wrapper */}
+      <div className="bg-white  w-full flex-1 flex flex-col rounded-lg"></div>
     </div>
   );
 };
