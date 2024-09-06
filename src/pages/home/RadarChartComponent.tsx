@@ -1,22 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { Radar } from 'react-chartjs-2';
 import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from 'chart.js';
-import { RadarChartData, RadarChartOptions } from '../../common/constants';
+import { Mock_Chart_Response, RadarChartData, RadarChartOptions } from '../../common/constants';
 
 // Register necessary components for Radar chart
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
-
-const mockLabels = [
-  'Coding',
-  'Trading',
-  'Medicine',
-  'Government',
-  'Planning',
-  'Music',
-  'Comedy Shows',
-  'Designing',
-];
-const mockValues = [30, 15, 4, 7, 20, 12, 4, 8];
 
 export const RadarChartComponent = () => {
   const chartRef = useRef<any>(null);
@@ -35,11 +23,11 @@ export const RadarChartComponent = () => {
       // Update chart data state with new labels and data from API
       setRadarChartData((prevState) => ({
         ...prevState,
-        labels: mockLabels,
+        labels: Mock_Chart_Response.map((item) => item.label),
         datasets: [
           {
             ...prevState.datasets[0],
-            data: mockValues,
+            data: Mock_Chart_Response.map((item) => parseInt(item.percentage)),
           },
         ],
       }));
@@ -82,7 +70,7 @@ export const RadarChartComponent = () => {
             'Loading...'
           ) : (
             <>
-              <span className="font-bold">{highestValue ? highestValue : 'N/A'} </span>
+              <span className="font-bold">{highestValue ? highestValue + '%' : 'N/A'} </span>
               of your data quality is from
               <span className="font-bold"> {highestLabel ? highestLabel : 'N/A'}</span>
             </>

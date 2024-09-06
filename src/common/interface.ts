@@ -132,3 +132,8 @@ export interface PendingCard {
   cardTypeToRender?: CardTypeToRender;
   stockImage?: string;
 }
+
+export interface ChartItem {
+  label: string;
+  percentage: string;
+}
