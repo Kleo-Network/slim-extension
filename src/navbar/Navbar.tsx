@@ -1,5 +1,6 @@
 import React from 'react';
 import { REDIRECT_TO_DASHBOARD_URL } from '../common/constants';
+import { replaceSlugInURL } from '../common/utils';
 
 interface NavbarProps {
   slug: string;
@@ -8,7 +9,7 @@ interface NavbarProps {
 const Navbar = ({ slug }: NavbarProps) => {
   // Desc: This will redirect user to it's dashboard page in website.
   const goToDashboard = React.useCallback(() => {
-    window.open(REDIRECT_TO_DASHBOARD_URL.replace('slug', slug), '_blank');
+    window.open(replaceSlugInURL(REDIRECT_TO_DASHBOARD_URL, slug), '_blank');
   }, [slug]);
 
   return (
