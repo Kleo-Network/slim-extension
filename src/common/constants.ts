@@ -27,17 +27,19 @@ export const RadarChartOptions = {
     r: {
       beginAtZero: true,
       angleLines: {
-        display: false,
+        display: true,
+        color: 'rgb(208, 213, 221)', // Graying border color
+        lineWidth: 0.8,
       },
       grid: {
-        color: 'rgba(216, 180, 254, 1)', // White grid lines
+        color: 'rgb(208, 213, 221)',
         circular: true,
-        lineWidth: 2,
+        lineWidth: 0.8,
       },
       pointLabels: {
-        color: 'rgba(107, 33, 168, 1)', // White labels
+        color: 'rgba(29, 41, 57, 1)', // White labels
         font: {
-          size: 12,
+          size: 10,
         },
       },
       ticks: {
@@ -61,12 +63,13 @@ export const RadarChartData = {
   datasets: [
     {
       data: [20, 30],
-      backgroundColor: 'rgba(127, 86, 217, 0.2)', // Light pink background
+      backgroundColor: 'rgba(127, 86, 217, 0.1)', // white background
       borderColor: 'rgba(127, 86, 217, 1)', // White border line
-      pointBackgroundColor: 'rgba(147, 51, 234, 0.7)', // White points
-      pointBorderColor: 'rgba(147, 51, 234, 1)', // White point border
-      pointHoverBackgroundColor: 'rgba(147, 51, 234, 1)', // White point hover background
-      pointHoverBorderColor: 'rgba(147, 51, 234, 1)', // White point hover border
+      borderWidth: 0.8,
+      pointBackgroundColor: 'rgba(127, 86, 217, 1)', // White points
+      pointBorderColor: 'rgba(127, 86, 217, 1)', // White point border
+      pointHoverBackgroundColor: 'rgba(107,33,168, 1)', // White point hover background
+      pointHoverBorderColor: 'rgba(107,33,168, 1)', // White point hover border
     },
   ],
 };

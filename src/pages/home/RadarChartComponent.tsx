@@ -61,6 +61,7 @@ export const RadarChartComponent = () => {
 
   return (
     <div className="h-full w-full flex flex-col items-center gap-4">
+      {/* Original Chart */}
       <div className="flex-1 flex justify-center items-center">
         {isLoading && (
           <div className="w-8 h-8 border-4 border-t-4 border-gray-200 border-t-purple-500 rounded-full animate-spin"></div>
