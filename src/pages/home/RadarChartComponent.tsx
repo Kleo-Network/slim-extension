@@ -7,18 +7,16 @@ import { RadarChartData, RadarChartOptions } from '../../common/constants';
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
 const mockLabels = [
-  'Eating',
-  'Drinking',
-  'Sleeping',
+  'Coding',
+  'Trading',
+  'Medicine',
+  'Government',
+  'Planning',
+  'Music',
+  'Comedy Shows',
   'Designing',
-  'Coding',
-  'Cycling',
-  'Running',
-  'Coding',
-  'Cycling',
-  'Running',
 ];
-const mockValues = [35, 70, 55, 80, 60, 45, 90, 60, 45, 90.34];
+const mockValues = [30, 15, 4, 7, 20, 12, 4, 8];
 
 export const RadarChartComponent = () => {
   const chartRef = useRef<any>(null);
