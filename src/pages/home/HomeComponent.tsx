@@ -2,6 +2,7 @@ import { MetaMaskAvatar } from 'react-metamask-avatar';
 import { ACTIVITY_GRAPH_TITLE, KLEO_XP, MOCK_USER, SHARE_ON_X } from '../../common/constants';
 import { UserData } from '../../common/interface';
 import { convertTimeStampToDateString, truncateText } from '../../common/utils';
+import { RadarChartComponent } from './RadarChartComponent';
 
 interface HomeComponentProps {
   user: UserData;
@@ -36,7 +37,7 @@ export const HomeComponent = ({ user }: HomeComponentProps) => {
         </div>
       </div>
       {/* Activity Cart Wrapper */}
-      <div className="bg-white  w-full flex-1 flex flex-col justify-between rounded-lg p-4">
+      <div className="bg-white  w-full flex-1 flex flex-col justify-between rounded-lg p-4 gap-4">
         {/* Title + ShareOnX */}
         <div className="flex items-center justify-between w-full">
           <span className="font-semibold text-base text-black">{ACTIVITY_GRAPH_TITLE}</span>
@@ -46,13 +47,8 @@ export const HomeComponent = ({ user }: HomeComponentProps) => {
           </button>
         </div>
         {/* Chart */}
-        {/* Max Contribution Banner */}
-        <div className="w-full bg-gray-blue-800 min-h-9 rounded-lg px-4 py-2 flex items-center gap-2">
-          <div className="size-3 rounded-full bg-white shrink-0"></div>
-          <div className="font-normal text-gray-blue-25 text-xs">
-            <span className="font-bold">64% </span> of your data quality is from
-            <span className="font-bold"> Running</span>
-          </div>
+        <div className="w-full flex-1 max-h-[264px]">
+          <RadarChartComponent />
         </div>
       </div>
     </div>
