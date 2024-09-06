@@ -1,5 +1,5 @@
 import { MetaMaskAvatar } from 'react-metamask-avatar';
-import { KLEO_XP, MOCK_USER } from '../../common/constants';
+import { ACTIVITY_GRAPH_TITLE, KLEO_XP, MOCK_USER, SHARE_ON_X } from '../../common/constants';
 import { UserData } from '../../common/interface';
 import { convertTimeStampToDateString, truncateText } from '../../common/utils';
 
@@ -13,7 +13,7 @@ export const HomeComponent = ({ user }: HomeComponentProps) => {
   user = MOCK_USER;
 
   return (
-    <div className="h-full w-full bg-gray-blue p-4 flex gap-4">
+    <div className="h-full w-full bg-gray-blue p-4 flex gap-4 flex-col">
       {/* Name + Kleo Points Top-bar */}
       <div className="flex justify-between items-center w-full h-[42px]">
         <div className="flex flex-1 justify-start items-center gap-2 h-full mr-8">
@@ -36,7 +36,18 @@ export const HomeComponent = ({ user }: HomeComponentProps) => {
         </div>
       </div>
       {/* Activity Cart Wrapper */}
-      <div className="bg-white  w-full flex-1 flex flex-col rounded-lg"></div>
+      <div className="bg-white  w-full flex-1 flex flex-col justify-between rounded-lg p-4">
+        {/* Title + ShareOnX */}
+        <div className="flex items-center justify-between w-full">
+          <span className="font-semibold text-base text-black">{ACTIVITY_GRAPH_TITLE}</span>
+          {/* Share on X button */}
+          <button className="h-9 w-max px-4 py-2 text-white bg-primary-btn-500 hover:bg-primary-btn-600 rounded-lg">
+            {SHARE_ON_X}
+          </button>
+        </div>
+        {/* Chart */}
+        {/* Max Contribution Banner */}
+      </div>
     </div>
   );
 };

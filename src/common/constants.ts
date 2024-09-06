@@ -1,6 +1,8 @@
 export const REDIRECT_TO_DASHBOARD_URL = `https://www.app.kleo.network/profileV2/{slug}`;
 
 export const KLEO_XP = 'KLEO XP';
+export const ACTIVITY_GRAPH_TITLE = 'Activity Graph';
+export const SHARE_ON_X = 'Share on X';
 
 export const MOCK_USER = {
   badges: [],
