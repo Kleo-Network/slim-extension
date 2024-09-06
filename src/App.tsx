@@ -6,6 +6,7 @@ import useFetch from './common/hooks/useFetch';
 import RegisterKleo from './pages/ProfileCards/RegisterKleo';
 import CardCreatedState from './pages/ProfileCards/RegisterKleo';
 import ProfileCardsComponent from './pages/ProfileCards/ProfileCardComponent';
+import { HomeComponent } from './pages/home/HomeComponent';
 
 function App(): ReactElement {
   const emptyStringArray: string[] = [];
@@ -70,7 +71,7 @@ function App(): ReactElement {
           <Routes>
             <Route path="/card-created" element={<CardCreatedState />} />
             <Route path="/cards" element={<ProfileCardsComponent user={user} setUser={setUser} slug={slug} />} />
-            {/* <Route path="/home" element={<HomeComponent user={user} slug={slug} />} /> */}
+            <Route path="/home" element={<HomeComponent user={user} />} />
           </Routes>
         </div>
       ) : (
