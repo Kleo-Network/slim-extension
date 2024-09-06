@@ -12,21 +12,16 @@ function App(): ReactElement {
   const emptyStringArray: string[] = [];
   const [slug, setSlug] = useState<string>('');
   const [user, setUser] = useState<UserData>({
-    about: '',
     badges: emptyStringArray,
     content_tags: emptyStringArray,
+    first_time_user: false,
     identity_tags: emptyStringArray,
-    last_attested: Math.floor(Date.now() / 1000),
-    last_cards_marked: Math.floor(Date.now() / 1000),
-    name: 'Kleo User',
-    pfp: 'https://pbs.twimg.com/profile_images/1590877918015926272/Xl2Bd-X2_400x400.jpg',
-    profile_metadata: {},
-    settings: {},
-    slug: '',
-    stage: 1,
+    kleo_points: 88,
+    data_quality: 87,
+    last_minted: Math.floor(Date.now() / 1000),
+    slug: '0xB344d8c2C1d3298Fe61da6fE8F4aEe4D18bED6e5',
     verified: false,
-    email: '',
-    token: '',
+    total_data_quantity: 2, // this would be in MegaBytes, this is 34MB
   });
   const navigate = useNavigate();
 

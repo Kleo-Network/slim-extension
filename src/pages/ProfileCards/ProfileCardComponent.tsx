@@ -61,7 +61,7 @@ export default function ProfileCardsComponent({ user, setUser, slug }: UserDataP
   const removeCard = (id: string, hasToPublished: boolean) => {
     console.log(id);
     if (hasToPublished) {
-      user.profile_metadata.kleo_points++;
+      user.kleo_points++;
     }
 
     managePendingCardCreation(replaceSlugInURL(CREATE_PUBLISHED_CARDS, slug), {
@@ -102,7 +102,7 @@ export default function ProfileCardsComponent({ user, setUser, slug }: UserDataP
               </div>
               <div className="flex flex-row ml-2 mr-1">
                 <div className="font-medium text-sm text-violet-700">
-                  {user.profile_metadata.kleo_points ? user.profile_metadata.kleo_points : 0}
+                  {user.kleo_points ? user.kleo_points : 0}
                 </div>
                 <div className="flex font-light text-[10px] text-violet-500 ml-1 text-center items-center">
                   KLEO
@@ -216,7 +216,7 @@ export default function ProfileCardsComponent({ user, setUser, slug }: UserDataP
                 </div>
                 <div className="flex flex-row ml-2 mr-1">
                   <div className="font-medium text-sm text-violet-700">
-                    {user.profile_metadata.kleo_points ? user.profile_metadata.kleo_points : 0}
+                    {user.kleo_points ? user.kleo_points : 0}
                   </div>
                   <div className="flex font-light text-[10px] text-violet-500 ml-1 text-center items-center">
                     KLEO
@@ -231,10 +231,10 @@ export default function ProfileCardsComponent({ user, setUser, slug }: UserDataP
                 Come back tomorrow for new cards
               </div>
               <div className="bg-gray-50 rounded-lg shadow-lg flex flex-col justify-between min-w-[desiredMinWeight] min-h-[desiredMinHeight] mt-12">
-                <CountdownTimer
+                {/* <CountdownTimer
                   endDate={convertEpochToISO(user.last_cards_marked + 86400)}
                   isProfilePage={false}
-                />
+                /> */}
               </div>
             </div>
           </div>
