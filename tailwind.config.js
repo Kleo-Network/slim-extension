@@ -9,7 +9,11 @@ module.exports = {
       },
       colors: {
         'gray-navbar': '#f8f9fc',
-        'gray-blue': '#EAECF5',
+        'gray-blue': {
+          25: '#FCFCFD',
+          100: '#EAECF5',
+          800: '#293056',
+        },
         'gray-lightest': '#f9fafb',
         'gray-subheader': '#98A2B3',
         'gray-background': '#F2F4F7',

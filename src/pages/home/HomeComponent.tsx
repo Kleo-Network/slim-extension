@@ -13,7 +13,7 @@ export const HomeComponent = ({ user }: HomeComponentProps) => {
   user = MOCK_USER;
 
   return (
-    <div className="h-full w-full bg-gray-blue p-4 flex gap-4 flex-col">
+    <div className="h-full w-full bg-gray-blue-100 p-4 flex gap-4 flex-col">
       {/* Name + Kleo Points Top-bar */}
       <div className="flex justify-between items-center w-full h-[42px]">
         <div className="flex flex-1 justify-start items-center gap-2 h-full mr-8">
@@ -47,6 +47,13 @@ export const HomeComponent = ({ user }: HomeComponentProps) => {
         </div>
         {/* Chart */}
         {/* Max Contribution Banner */}
+        <div className="w-full bg-gray-blue-800 min-h-9 rounded-lg px-4 py-2 flex items-center gap-2">
+          <div className="size-3 rounded-full bg-white shrink-0"></div>
+          <div className="font-normal text-gray-blue-25 text-xs">
+            <span className="font-bold">64% </span> of your data quality is from
+            <span className="font-bold"> Running</span>
+          </div>
+        </div>
       </div>
     </div>
   );
