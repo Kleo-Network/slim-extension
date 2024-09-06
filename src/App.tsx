@@ -66,7 +66,7 @@ function App(): ReactElement {
       {slug !== '' ? (
         <div className="flex flex-col font-inter self-stretch h-full rounded-xl">
           <header className="flex flex-row self-stretch items-center">
-            <Navbar avatar={{ src: user.pfp, alt: 'Profile' }} slug={user.slug} />
+            <Navbar slug={user.slug} />
           </header>
 
           <Routes>
