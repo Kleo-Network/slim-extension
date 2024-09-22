@@ -12,6 +12,36 @@ const kleoCoinInContainerPath = '../assets/images/homeImages/kleoCoinInContainer
 
 export const HomeComponent = ({ user }: HomeComponentProps) => {
   user = MOCK_USER;
+  // Function to download the radar chart as an image
+  const downloadImage = () => {
+    const canvas = document.getElementsByTagName('canvas')[0];
+    const imageLink = document.createElement('a');
+    imageLink.download = 'activityChart.png';
+    imageLink.href = canvas.toDataURL('image/png', 1);
+    imageLink.click();
+  };
+
+  // Function to open Twitter share dialog with pre-filled content
+  const shareOnTwitter = () => {
+    const text = `Check out my Activity! My data activity was most in 'Designing' followed by Coding and Politics. Got rewarded 230 Kleo Points for the same.
+
+Create your profile and get Kleo points!
+@kleo_network #KLEO`;
+
+    // Twitter web intent URL - for sharing text and hashtags
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+
+    // Open Twitter share dialog in a new tab
+    window.open(twitterUrl, '_blank');
+  };
+
+  // Combined handler: download the image and open Twitter share dialog
+  const handleShareOnTwitter = () => {
+    downloadImage(); // First, download the image
+    setTimeout(() => {
+      shareOnTwitter(); // Then, guide the user to share it on Twitter
+    }, 500); // Small delay to ensure the download process starts before opening Twitter
+  };
 
   return (
     <div className="h-full w-full bg-gray-blue-100 p-4 flex gap-4 flex-col">
@@ -42,7 +72,10 @@ export const HomeComponent = ({ user }: HomeComponentProps) => {
         <div className="flex items-center justify-between w-full">
           <span className="font-semibold text-base text-black">{ACTIVITY_GRAPH_TITLE}</span>
           {/* Share on X button */}
-          <button className="h-9 w-max px-4 py-2 text-white bg-primary-btn-500 hover:bg-primary-btn-600 rounded-lg">
+          <button
+            className="h-9 w-max px-4 py-2 text-white bg-primary-btn-500 hover:bg-primary-btn-600 rounded-lg"
+            onClick={handleShareOnTwitter}
+          >
             {SHARE_ON_X}
           </button>
         </div>
