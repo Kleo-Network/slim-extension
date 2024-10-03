@@ -5,8 +5,7 @@ import Navbar from './navbar/Navbar'
 import ProfileCards from './ProfileCards/App'
 import useFetch from './common/hooks/useFetch'
 import CardCreatedState from './ProfileCards/CardCreatedState'
-import RegisterKleo from './ProfileCards/RegisterKleo'
-
+import Processing from './ProfileCards/Processing'
 import { LeaderBoardComponent } from './LeaderBoardComponent/LeaderBoardComponent'
 
 function App(): ReactElement {
@@ -87,7 +86,17 @@ function App(): ReactElement {
             element={<LeaderBoardComponent user={user} slug={slug} />}
           />
         </Routes>
-      </div> : <RegisterKleo />}
+      </div> : 
+      <div className="flex flex-col font-inter self-stretch h-full rounded-xl">
+      <header className="flex flex-row self-stretch items-center">
+        <Navbar
+          avatar={{ src: user.pfp, alt: 'Profile' }}
+          slug={user.slug}
+        />
+      </header>
+
+      
+      <Processing /></div>}
 
     </div>
   )

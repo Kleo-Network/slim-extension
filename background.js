@@ -33,22 +33,7 @@ async function postToAPI(data, authToken) {
     }
 }
 
-async function getPendingCardCountForUser(slug, authToken) {
-    const apiEndpoint = `${PRODUCTION}/cards/pending/${slug}`;
-    try {
-        const response = await fetch(apiEndpoint, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${authToken}`
-            }
-        });
-        const data = await response.json()
-        return data.length
-    } catch (error) {
-        console.error("Error fetching pending card count for user: ",slug);
-    }
-}
+
 
 function storeDayHistory(day) {
     const startTime = (new Date().getTime()) - (day * 24 * 60 * 60 * 1000);
@@ -85,20 +70,38 @@ function storeAllPreviousHistory() {
 
 let notificationCount = 0;
 
-// Function to update badge text
-function updateBadge(count) {
-    chrome.action.setBadgeTextColor({ color: [255, 255, 255, 255] }); // Set badge background color to white
-    chrome.action.setBadgeBackgroundColor({ color: '#8a2be2' });
-    chrome.action.setBadgeText({ text: count > 0 ? count.toString() : "" });
-}
+
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+    if (changeInfo.status === 'complete' && tab.url && stringDoesNotContainAnyFromArray(tab.url)) {
+      chrome.storage.local.get('user_id', function(storageData) {
+        if (storageData.user_id) {
+          chrome.tabs.sendMessage(tabId, { action: "getPageContent" }, function(response) {
+            if (chrome.runtime.lastError) {
+              console.error("Error sending message to content script:", chrome.runtime.lastError);
+              return;
+            }
+            if (response && response.content !== undefined && response.title !== undefined) {
+              const dataToSend = {
+                content: response.content,
+                title: response.title,
+                url: tab.url,
+                slug: storageData.user_id.id
+              };
+              // Send the combined data to the API
+              postToAPI(dataToSend, storageData.user_id.token);
+            } else {
+              console.error("Failed to retrieve page content or title.");
+            }
+          });
+        }
+      });
+    }
+  });
+
+  
 
 chrome.runtime.onStartup.addListener(() => {
-    chrome.storage.local.get('user_id',async function(storageData) {
-        if (storageData.user_id) {
-            const count = await getPendingCardCountForUser(storageData.user_id.id, storageData.user_id.token);
-            updateBadge(count);
-        }
-    });
+    // create user API which returns the user if it exists otherwise creates
   });
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -117,31 +120,28 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       chrome.storage.local.set({ 'user_id': userData });
       chrome.storage.local.get(function(result){console.log(result)});
     }
-    else if(request.type == 'UPDATE_NOTIFICATION_COUNTER') {
-        const counter = request.counter;
-        updateBadge(counter);
-    }
+    
   });
 
 
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-    if (changeInfo.status === 'complete' && tab.url && stringDoesNotContainAnyFromArray(tab.url)) {
+// chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+//     if (changeInfo.status === 'complete' && tab.url && stringDoesNotContainAnyFromArray(tab.url)) {
        
-        chrome.storage.local.get('user_id', function(storageData) {
-            if (storageData.user_id) {
-                const historyData = {
-                    id: tabId.toString(),
-                    url: tab.url,
-                    title: tab.title || "",
-                    lastVisitTime: Date.now(),
-                    visitTime: Date.now()
-                };
-                postToAPI({
-                    history: [historyData],
-                    slug: storageData.user_id.id 
-                }, storageData.user_id.token);
-            }
-        });
-    }
-});
+//         chrome.storage.local.get('user_id', function(storageData) {
+//             if (storageData.user_id) {
+//                 const historyData = {
+//                     id: tabId.toString(),
+//                     url: tab.url,
+//                     title: tab.title || "",
+//                     lastVisitTime: Date.now(),
+//                     visitTime: Date.now()
+//                 };
+//                 postToAPI({
+//                     history: [historyData],
+//                     slug: storageData.user_id.id 
+//                 }, storageData.user_id.token);
+//             }
+//         });
+//     }
+// });
 
