@@ -1,5 +1,5 @@
 
-export default function CardCreatedState() {
+export default function RegisterPopup() {
 
   const openKleo = () => {
     window.open('https://app.kleo.network', '_blank', 'noopener,noreferrer')

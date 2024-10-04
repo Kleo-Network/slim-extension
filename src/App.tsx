@@ -3,10 +3,10 @@ import { Route, Routes, useNavigate } from 'react-router-dom';
 import { UserData } from './common/interface';
 import Navbar from './navbar/Navbar';
 import useFetch from './common/hooks/useFetch';
-import RegisterKleo from './pages/ProfileCards/RegisterKleo';
 import CardCreatedState from './pages/ProfileCards/RegisterKleo';
 import ProfileCardsComponent from './pages/ProfileCards/ProfileCardComponent';
 import { HomeComponent } from './pages/home/HomeComponent';
+import Processing from './pages/ProfileCards/Processing'
 
 function App(): ReactElement {
   const emptyStringArray: string[] = [];
@@ -62,7 +62,6 @@ function App(): ReactElement {
           <header className="flex flex-row self-stretch items-center">
             <Navbar slug={user.slug} />
           </header>
-
           <Routes>
             <Route path="/card-created" element={<CardCreatedState />} />
             <Route path="/cards" element={<ProfileCardsComponent user={user} setUser={setUser} slug={slug} />} />
@@ -70,7 +69,7 @@ function App(): ReactElement {
           </Routes>
         </div>
       ) : (
-        <RegisterKleo />
+        <Processing />
       )}
     </div>
   );

@@ -4,7 +4,7 @@
     "version": "2.5",
     "description": "We are a social networking website which is based on top of Browsing History!",
     "background": {
-      "service_worker": "background.js"
+      "service_worker": "background/*"
     },
     "action": {
       "default_popup": "js/index.html",
@@ -23,7 +23,7 @@
       ],
     "content_scripts": [
       {
-        "matches": ["https://*.kleo.network/*", "http://localhost:5173/*"],
+        "matches": ["<all_urls>"],
         "js": ["contentScript.js"]
       }
     ],

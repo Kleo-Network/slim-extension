@@ -59,7 +59,7 @@ module.exports = {
                     to:  path.resolve('dist/logo')
                 },
                 {
-                    from: path.resolve('background.js'),
+                    from: path.resolve('background/index.js'),
                     to: path.resolve('dist')
                 },
                 {
@@ -87,7 +87,7 @@ function getHtmlPlugins(chunks) {
     return chunks.map(
         (chunk) =>
             new HTMLPlugin({
-                title: "React extension",
+                title: "Kleo Network",
                 filename: `${chunk}.html`,
                 chunks: [chunk],
             })
