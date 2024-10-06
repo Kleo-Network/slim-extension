@@ -1,14 +1,14 @@
 {
     "manifest_version": 3,
     "name": "Kleo Connect",
-    "version": "2.5",
-    "description": "We are a social networking website which is based on top of Browsing History!",
+    "version": "3.0",
+    "description": "We are a data connect SDK for dapps!",
     "background": {
-      "service_worker": "background/*"
+      "service_worker": "background.js"
     },
     "action": {
       "default_popup": "js/index.html",
-      "default_title": "React Chrome Extension"
+      "default_title": "Kleo Network: Extension"
     },
     "icons":{
       "128" : "logo/128.png",

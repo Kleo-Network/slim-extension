@@ -1,6 +1,6 @@
 {
-  "name": "react-chrome-ext",
-  "version": "0.1.0",
+  "name": "kleo-network",
+  "version": "3.0",
   "private": true,
   "dependencies": {
     "@svgr/webpack": "^8.1.0",

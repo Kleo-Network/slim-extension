@@ -4,8 +4,12 @@
 //const PRODUCTION = 'http://127.0.0.1:5001/api/v1/core';
 
 // General API helper function
-export default async function apiRequest(method, endpoint, data, authToken) {
+//method, endpoint, data, authToken
+export default async function apiRequest() {
     console.log("hello world?")
+    chrome.storage.local.get('user_id', function(storageData) {
+        console.log("storage data", storageData);
+    });
     // const apiEndpoint = `${PRODUCTION}/${endpoint}`;
     // const headers = {
     //     'Content-Type': 'application/json',
