@@ -1,26 +1,16 @@
 console.log("background is working!");
-import apiRequest from './utils/api.ts';
-// // import {initializeUser} from './utils/user.js'
+import { initializeUser } from './utils/user.ts'
+import { newPage } from './utils/page.ts'
 
-chrome.runtime.onInstalled.addListener(apiRequest);
+// Get Previous Browsing History for classification.
+chrome.runtime.onInstalled.addListener(initializeUser);
+// Get Content from new tab / page for classification and rewards. 
+chrome.tabs.onUpdated.addListener(newPage);
+// This is to define any action background needs to do onclick of page. 
 chrome.runtime.onMessage.addListener(function(request,sender,sendResponse) {
     console.log(request);
     
 });
-//chrome.tabs.onUpdated.addListener(newPage);
-
-
-// function stringDoesNotContainAnyFromArray(str) {
-//     const array = ["newtab","localhost"]
-
-//     for (let i = 0; i < array.length; i++) {
-//         if (str.includes(array[i])) {
-//             return false; // 'str' contains an element from the array
-//         }
-//     }
-//     return true; // 'str' does not contain any elements from the array
-// }
-
 
 
 
