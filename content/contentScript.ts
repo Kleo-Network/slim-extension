@@ -65,6 +65,7 @@ chrome.runtime.onMessage.addListener(
              sender: chrome.runtime.MessageSender, 
              sendResponse: (response?: any) => void): void {
         if (request.action === "getPageContent") {
+            console.log("received something from background.ts", document)
             sendResponse({content: document.body.innerText});
         }
     }

@@ -1,7 +1,7 @@
 // utils/api.ts
 
 //const PRODUCTION = 'https://api.kleo.network/api/v1/core';
-const PRODUCTION = 'http://127.0.0.1:5001/api/v1/core';
+const PRODUCTION = 'http://127.0.0.1:5001/api/v2/core';
 
 // Define types for the parameters
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
@@ -39,7 +39,7 @@ export async function apiRequest(
 
     try {
         const response = await fetch(apiEndpoint, options);
-        const responseData = await response.text(); // Or use response.json() if the response is JSON
+        const responseData = await response.json(); // Or use response.json() if the response is JSON
         console.log("response:", responseData);
         return responseData;
     } catch (error) {

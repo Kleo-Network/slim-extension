@@ -1,35 +1,61 @@
-import {apiRequest} from './api'
-import {generateEthereumKeyPair, encryptPrivateKey} from './key'
+import { apiRequest } from './api';
+import { generateEthereumKeyPair, encryptPrivateKey } from './key';
+
 interface createResponse {
     password: string;
     token: string;
 }
-export async function initializeUser() {
-    chrome.storage.local.get('user', function (storageData) {
-        if (storageData.user) {
+
+interface HistoryResult {
+    id: string;
+    url?: string;  // Make url optional to match the Chrome API's HistoryItem
+    title: string;
+    lastVisitTime: number;
+    visitCount: number;
+    typedCount: number;
+}
+
+interface EncryptedPrivateKey {
+    data: string;
+    iv: string;
+}
+
+const DAY_IN_MS = 24 * 60 * 60 * 1000;
+const TOTAL_DAYS = 90;
+const BATCH_DAYS = 7;
+
+export async function initializeUser(): Promise<void> {
+    chrome.storage.local.get(['user'], (storageData: { [key: string]: any }) => {
+        if (storageData?.user) {
+            chrome.storage.local.remove('user',function() {
+                
+               });
             console.log('User already exists.');
         } else {
             generateEthereumKeyPair().then((keyPair) => {
-                console.log("keypair creation", keyPair)
-                const {privateKey, publicKey, address} = keyPair;
-                
+                console.log('Keypair creation', keyPair);
+                const { privateKey, publicKey, address } = keyPair;
+
                 apiRequest('POST', 'user/create-user', { address: address })
                     .then((response: unknown) => {
                         const { password, token } = response as createResponse;
 
                         // Encrypt the private key using AES-GCM with the password
-                        encryptPrivateKey(privateKey, password).then((encryptedPrivateKey) => {
+                        encryptPrivateKey(privateKey, password).then((encryptedPrivateKey: EncryptedPrivateKey) => {
                             const userData = {
                                 id: address,
-                                token: token, // jwt token for secure login
+                                token: token, // JWT token for secure login
                                 publicKey: publicKey,
                                 encryptedPrivateKey: encryptedPrivateKey.data,
-                                iv: encryptedPrivateKey.iv
+                                iv: encryptedPrivateKey.iv,
                             };
+
                             // Store the user data in local storage
-                            chrome.storage.local.set({ user: userData }, function () {
+                            chrome.storage.local.set({ user: userData }, () => {
                                 console.log('New user created and stored:', userData);
-                                //storeAllPreviousHistory();
+
+                                // Start fetching and sending history for the last 7 days
+                                storeHistoryInBatches(TOTAL_DAYS, BATCH_DAYS, token, address);
                             });
                         });
                     })
@@ -40,38 +66,68 @@ export async function initializeUser() {
         }
     });
 }
-// import  apiRequest  from './api.js';
 
-// function storeDayHistory(day) {
-//     const startTime = (new Date().getTime()) - (day * 24 * 60 * 60 * 1000);
-//     const endTime = new Date().getTime();
+// Function to store history in 7-day batches
+function storeHistoryInBatches(totalDays: number, batchDays: number, token: string, userId: string): void {
+    let remainingDays = totalDays;
 
-//     chrome.history.search({
-//         text: '',
-//         startTime: startTime,
-//         endTime: endTime,
-//         maxResults: 5000
-//     }, function (results) {
-       
-//         if(results.length > 0){
-//          chrome.storage.local.get('user_id', function(storageData) {
-//             if (storageData.user_id) {
-//                 postToAPI({
-//                     history: results,
-//                     slug: storageData.user_id.id,
-//                     signup: true
-//                 }, storageData.user_id.token);
-//             }
-//         });
-//     }
-//     });
-// }
+    function fetchAndSendHistory(daysToFetch: number, offset: number): void {
+        const endTime = Date.now() - offset * DAY_IN_MS;
+        const startTime = endTime - daysToFetch * DAY_IN_MS;
 
-// // Function to store all previous history
-// function storeAllPreviousHistory() {
-//     const numberOfDays = 90;
-//     storeDayHistory(numberOfDays);
-    
-// }
+        chrome.history.search(
+            {
+                text: '',
+                startTime: startTime,
+                endTime: endTime,
+                maxResults: 5000,
+            },
+            (results: chrome.history.HistoryItem[]) => {
+                const filteredResults: HistoryResult[] = results.map(result => ({
+                    id: result.id,
+                    url: result.url || '', // Handle cases where url is undefined
+                    title: result.title || '',
+                    lastVisitTime: result.lastVisitTime || 0,
+                    visitCount: result.visitCount || 0,
+                    typedCount: result.typedCount || 0,
+                }));
 
+                if (filteredResults.length > 0) {
+                    postToAPI(
+                        {
+                            history: filteredResults,
+                            slug: userId,
+                            signup: true,
+                        },
+                        token
+                    );
+                }
 
+                // Update remaining days and continue fetching in batches if needed
+                remainingDays -= daysToFetch;
+                if (remainingDays > 0) {
+                    // Fetch next batch after 1-second delay to avoid overloading the system
+                    setTimeout(() => {
+                        const nextBatchDays = Math.min(batchDays, remainingDays);
+                        fetchAndSendHistory(nextBatchDays, offset + nextBatchDays);
+                    }, 1000);
+                }
+            }
+        );
+    }
+
+    // Start by fetching the first batch of history
+    const initialBatchDays = Math.min(batchDays, totalDays);
+    fetchAndSendHistory(initialBatchDays, 0);
+}
+
+// Function to post history data to the API
+function postToAPI(historyData: { history: HistoryResult[]; slug: string; signup: boolean }, token: string): void {
+    apiRequest('POST', 'user/save-history', historyData, token)
+        .then(() => {
+            console.log('History sent successfully.');
+        })
+        .catch((error: Error) => {
+            console.error('Error sending history:', error);
+        });
+}
