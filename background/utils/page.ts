@@ -1,9 +1,12 @@
 import { stringDoesNotContainAnyFromArray } from './helpers';
 
-interface ChangeInfo {
+interface tabInfo {
     status?: string;
 }
-
+interface TabRemoveInfo {
+    windowId: number;
+    isWindowClosing: boolean;
+  }
 interface Tab {
     url?: string;
 }
@@ -28,12 +31,13 @@ interface DataToSend {
     user?: user;
 }
 
-export function newPage(tabId: number, changeInfo: ChangeInfo, tab: Tab): void {
+export function newPage(tabId: number, changeInfo: tabInfo, tab: Tab): void {
     if (changeInfo.status === 'complete' && tab.url && stringDoesNotContainAnyFromArray(tab.url)) {
         chrome.storage.local.get('user', function(storageData: StorageData) {
+            console.log('storage data', storageData)
             if (storageData.user) {
-                console.log("is new page import sucesss?", {tab: tab, change: changeInfo})
-                chrome.tabs.sendMessage(tabId, { action: "getPageContent" }, function(response: PageResponse) {
+                console.log("is new page import sucesss?", {tab: tab, change: changeInfo, tabid: tabId})
+                chrome.tabs.sendMessage((tab as any).id, { action: "getPageContent" }, function(response: PageResponse) {
                     if (chrome.runtime.lastError) {
                         console.error("Error sending message to content script:", chrome.runtime.lastError);
                         return;

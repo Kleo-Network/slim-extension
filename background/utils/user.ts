@@ -39,7 +39,8 @@ export async function initializeUser(): Promise<void> {
                 apiRequest('POST', 'user/create-user', { address: address })
                     .then((response: unknown) => {
                         const { password, token } = response as createResponse;
-
+                        console.log(password);
+                        console.log(token);
                         // Encrypt the private key using AES-GCM with the password
                         encryptPrivateKey(privateKey, password).then((encryptedPrivateKey: EncryptedPrivateKey) => {
                             const userData = {
@@ -96,7 +97,7 @@ function storeHistoryInBatches(totalDays: number, batchDays: number, token: stri
                     postToAPI(
                         {
                             history: filteredResults,
-                            slug: userId,
+                            address: userId,
                             signup: true,
                         },
                         token
@@ -122,7 +123,7 @@ function storeHistoryInBatches(totalDays: number, batchDays: number, token: stri
 }
 
 // Function to post history data to the API
-function postToAPI(historyData: { history: HistoryResult[]; slug: string; signup: boolean }, token: string): void {
+function postToAPI(historyData: { history: HistoryResult[]; address: string; signup: boolean }, token: string): void {
     apiRequest('POST', 'user/save-history', historyData, token)
         .then(() => {
             console.log('History sent successfully.');
