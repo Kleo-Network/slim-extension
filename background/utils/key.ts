@@ -59,54 +59,149 @@ function arrayBufferToBase64(buffer) {
     return btoa(String.fromCharCode(...new Uint8Array(buffer)));
 }
 
+// Function to get data from chrome.storage.local and return a Promise
+export function getFromStorage(key: string): Promise<{ [key: string]: any }> {
+    return new Promise((resolve, reject) => {
+        chrome.storage.local.get(key, function (result) {
+            if (chrome.runtime.lastError) {
+                reject(chrome.runtime.lastError);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+}
 
-// export async function executeTransaction() {
-//     // Retrieve the private key from storage
-//     chrome.storage.local.get('private_key', async function(storageData) {
-//         if (storageData.private_key) {
-//             const privateKey = storageData.private_key;
+// Function to decrypt the private key
+export async function decryptPrivateKey(encryptedData: { iv: string; data: string }, password: string): Promise<string> {
+    const enc = new TextEncoder();
+    const dec = new TextDecoder();
 
-//             // Define the custom network
-//             const customNetwork = {
-//                 name: 'Vana Moksha Testnet',
-//                 chainId: 14800,
+    let keyData = enc.encode(password);
+
+    // Adjust key length for AES-GCM
+    keyData = adjustKeyLength(keyData);
+
+    const key = await crypto.subtle.importKey(
+        'raw',
+        keyData,
+        'AES-GCM',
+        false,
+        ['decrypt']
+    );
+
+    const iv = base64ToArrayBuffer(encryptedData.iv);
+    const data = base64ToArrayBuffer(encryptedData.data);
+
+    const decryptedData = await crypto.subtle.decrypt(
+        {
+            name: 'AES-GCM',
+            iv: iv,
+        },
+        key,
+        data
+    );
+
+    const decryptedPrivateKeyHex = dec.decode(decryptedData);
+    return decryptedPrivateKeyHex;
+}
+
+// Helper function to adjust key length for AES-GCM
+function adjustKeyLength(keyData: Uint8Array): Uint8Array {
+    if ([16, 24, 32].includes(keyData.length)) {
+        return keyData;
+    } else if (keyData.length > 32) {
+        return keyData.slice(0, 32);
+    } else {
+        const paddedLength = keyData.length < 16 ? 16 : keyData.length < 24 ? 24 : 32;
+        const paddedKey = new Uint8Array(paddedLength);
+        paddedKey.set(keyData);
+        return paddedKey;
+    }
+}
+
+// Helper function to convert base64 to ArrayBuffer
+function base64ToArrayBuffer(base64: string): Uint8Array {
+    const binaryString = atob(base64);
+    const length = binaryString.length;
+    const bytes = new Uint8Array(length);
+    for (let i = 0; i < length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes;
+}
+
+// Function to execute the smart contract function
+export async function executeSmartContractFunction(privateKey: string, rpcUrl: string, contractData: any): Promise<void> {
+    // Initialize the provider with the RPC URL
+    const provider = new ethers.JsonRpcProvider(rpcUrl);
+
+    // Initialize the wallet with the decrypted private key and provider
+    const wallet = new ethers.Wallet(privateKey, provider);
+
+    // Extract contract details
+    const contractAddress = contractData.address;
+    const contractABI = contractData.abi;
+    const functionName = contractData.functionName;
+    const functionParams = contractData.functionParams || [];
+
+    // Initialize the contract instance
+    const contract = new ethers.Contract(contractAddress, contractABI, wallet);
+
+    try {
+        // Estimate gas limit
+        const gasLimit = await contract.estimateGas[functionName](...functionParams);
+
+        // Call the smart contract function
+        const transactionResponse = await contract[functionName](...functionParams, {
+            gasLimit: gasLimit,
+            gasPrice: (await provider.getFeeData()).gasPrice,
+        });
+        console.log('Transaction sent:', transactionResponse);
+
+        // Wait for the transaction to be mined
+        const receipt = await transactionResponse.wait();
+        console.log('Transaction mined:', receipt);
+    } catch (error) {
+        console.error('Error executing transaction:', error);
+    }
+}
+
+// async function main() {
+//     try {
+//         // Get the encrypted private key from storage
+//         const storageData = await getFromStorage('encryptedPrivateKey');
+
+//         if (storageData.encryptedPrivateKey) {
+//             // Decrypt the private key using the password
+//             const decryptedPrivateKey = await decryptPrivateKey(
+//                 storageData.encryptedPrivateKey,
+//                 'your_password_here'
+//             );
+
+//             // Prepare contract data
+//             const contractData = {
+//                 address: 'SMART_CONTRACT_ADDRESS',
+//                 abi: [
+//                     // Your contract's ABI
+//                 ],
+//                 functionName: 'yourFunctionName',
+//                 functionParams: ['param1', 'param2'],
 //             };
 
-//             // Initialize the provider with your custom RPC URL
-//             const provider = new ethers.providers.JsonRpcProvider('YOUR_RPC_URL', customNetwork); // Replace with your RPC URL
-
-//             // Initialize the wallet with the provider
-//             const wallet = new ethers.Wallet(privateKey, provider);
-
-//             // Smart contract address and ABI
-//             const contractAddress = 'SMART_CONTRACT_ADDRESS'; // Replace with your contract's address
-//             const contractABI = [
-//                 // Replace with your contract's ABI
-//                 // For example, the ABI for the addFile function might look like this:
-//                 "function addFile(string memory fileHash) public returns (bool)"
-//             ];
-
-//             // Initialize the contract instance
-//             const contract = new ethers.Contract(contractAddress, contractABI, wallet);
-
-//             try {
-//                 // Call the addFile function
-//                 const fileHash = 'YOUR_FILE_HASH'; // Replace with the actual file hash or data
-//                 const transactionResponse = await contract.addFile(fileHash, {
-//                     gasLimit: ethers.utils.hexlify(100000), // Adjust gas limit as needed
-//                     gasPrice: await provider.getGasPrice(),
-//                 });
-//                 console.log('Transaction sent:', transactionResponse);
-
-//                 // Wait for the transaction to be mined
-//                 const receipt = await transactionResponse.wait();
-//                 console.log('Transaction mined:', receipt);
-//             } catch (error) {
-//                 console.error('Error executing transaction:', error);
-//             }
+//             // Execute the smart contract function
+//             await executeSmartContractFunction(
+//                 decryptedPrivateKey,
+//                 'YOUR_RPC_URL',
+//                 contractData
+//             );
 //         } else {
-//             console.error('Private key not found in storage');
+//             console.error('Encrypted private key not found in storage');
 //         }
-//     });
+//     } catch (error) {
+//         console.error('Error:', error);
+//     }
 // }
+
+// main();
 
