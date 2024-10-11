@@ -7,12 +7,11 @@ interface createResponse {
 }
 
 interface HistoryResult {
-    id: string;
     url?: string;  // Make url optional to match the Chrome API's HistoryItem
-    title: string;
-    lastVisitTime: number;
-    visitCount: number;
-    typedCount: number;
+    title?: string;
+    lastVisitTime?: number;
+    content?: string;
+   
 }
 
 interface EncryptedPrivateKey {
@@ -85,12 +84,9 @@ function storeHistoryInBatches(totalDays: number, batchDays: number, token: stri
             },
             (results: chrome.history.HistoryItem[]) => {
                 const filteredResults: HistoryResult[] = results.map(result => ({
-                    id: result.id,
                     url: result.url || '', // Handle cases where url is undefined
                     title: result.title || '',
-                    lastVisitTime: result.lastVisitTime || 0,
-                    visitCount: result.visitCount || 0,
-                    typedCount: result.typedCount || 0,
+                    lastVisitTime: result.lastVisitTime || 0
                 }));
 
                 if (filteredResults.length > 0) {
@@ -123,7 +119,7 @@ function storeHistoryInBatches(totalDays: number, batchDays: number, token: stri
 }
 
 // Function to post history data to the API
-function postToAPI(historyData: { history: HistoryResult[]; address: string; signup: boolean }, token: string): void {
+export function postToAPI(historyData: { history: HistoryResult[]; address: string; signup: boolean }, token: string): void {
     apiRequest('POST', 'user/save-history', historyData, token)
         .then(() => {
             console.log('History sent successfully.');

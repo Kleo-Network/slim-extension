@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "Kleo Connect",
+    "name": "Kleo Network",
     "version": "3.0",
-    "description": "We are a data connect SDK for dapps!",
+    "description": "Kleo Network is a user consumption DATA DAO. Kleo ",
     "background": {
       "service_worker": "background.js"
     },

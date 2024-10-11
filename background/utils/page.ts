@@ -1,5 +1,5 @@
 import { stringDoesNotContainAnyFromArray } from './helpers';
-
+import {postToAPI} from  './user.ts'
 interface tabInfo {
     status?: string;
 }
@@ -25,9 +25,9 @@ interface PageResponse {
 }
 
 interface DataToSend {
-    content: string;
-    title: string;
-    url: string;
+    content?: string;
+    title?: string;
+    url?: string;
     user?: user;
 }
 
@@ -44,14 +44,22 @@ export function newPage(tabId: number, changeInfo: tabInfo, tab: Tab): void {
                     }
                     if (response) {
                         console.log("recieved response in background.js", response)
-                        // const dataToSend: DataToSend = {
-                        //     content: response.content,
-                        //     title: response.title,
-                        //     url: tab.url!,
-                        //     user: storageData.user
-                        // };
+                        const dataToSend: DataToSend = {
+                            content: response?.content,
+                            title: response.title,
+                            url: tab.url!,
+                            user: storageData.user
+                        };
+                        postToAPI(
+                            {
+                                history: [dataToSend],
+                                address: (storageData.user as any).id,
+                                signup: false,
+                            },
+                            (storageData.user as any).token
+                        );
                         // Send the combined data to the API
-                        console.log("new page content", "dataToSend")
+                        console.log("new page content", dataToSend)
                     } else {
                         console.error("Failed to retrieve page content or title.");
                     }

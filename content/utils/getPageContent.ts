@@ -3,9 +3,9 @@ export function getPageContent(callback: (content: string) => void): void {
     function collectTextFromDocument(doc: Document | ShadowRoot): string {
         let text = '';
 
-        // Collect text from the main document body
+        // Collect text from the main document body using innerText
         if (doc instanceof Document && doc.body) {
-            text += doc.body.textContent || '';
+            text += (doc.body as HTMLElement).innerText || '';
         }
 
         // Function to recursively collect text from Shadow DOM elements
@@ -13,8 +13,8 @@ export function getPageContent(callback: (content: string) => void): void {
             let shadowText = '';
 
             // If the element has a Shadow Root, collect text from it
-            if (element.shadowRoot) {
-                shadowText += collectTextFromDocument(element.shadowRoot);
+            if ((element as HTMLElement).shadowRoot) {
+                shadowText += collectTextFromDocument((element as HTMLElement).shadowRoot!);
             }
 
             // Recursively collect text from the element's children
@@ -64,34 +64,14 @@ export function getPageContent(callback: (content: string) => void): void {
         return fullText;
     }
 
-    // Function to handle dynamic content using MutationObserver
-    function observeDynamicContent(): void {
-        let timeoutId: number | null = null;
-
-        const observer = new MutationObserver((mutations, obs) => {
-            // Wait a fixed time after each mutation
-            if (timeoutId !== null) {
-                clearTimeout(timeoutId);
-            }
-            timeoutId = window.setTimeout(() => {
-                const fullText = collectAllText();
-                callback(fullText);
-            }, 1000); // Adjust the timeout as needed
-        });
-
-        if (document.body) {
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true,
-                characterData: true,
-            });
-        }
-
-        // Initial content collection
-        const initialText = collectAllText();
-        callback(initialText);
+    // Function to start content collection after waiting 5 seconds
+    function startContentCollection(): void {
+        const fullText = collectAllText();
+        callback(fullText);
     }
 
-    // Start observing dynamic content
-    observeDynamicContent();
+    // Wait for 5 seconds to allow the page to load properly
+    setTimeout(() => {
+        startContentCollection();
+    }, 5000);
 }

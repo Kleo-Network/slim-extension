@@ -176,3 +176,27 @@ export function convertTimeStampToDateString(timeStamp: number) {
 
   return formattedDate;
 }
+
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+
+// Set the base URL for your API
+const BASE_URL = 'http://127.0.0.1:5001/api/v2/core';
+; // Replace this with your actual base URL
+
+// Create a reusable function to make API requests
+export const apiRequest = async <T>(
+  endpoint: string,
+  config?: AxiosRequestConfig
+): Promise<AxiosResponse<T>> => {
+  try {
+    // Set up the request with the base URL
+    const response = await axios({
+      url: `${BASE_URL}${endpoint}`,
+      ...config, // Allows config overrides such as headers, params, etc.
+    });
+    return response;
+  } catch (error) {
+    console.error('API request failed:', error);
+    throw error;
+  }
+};

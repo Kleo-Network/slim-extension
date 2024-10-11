@@ -1,6 +1,6 @@
 import { ChartItem } from './interface';
 
-export const REDIRECT_TO_DASHBOARD_URL = `https://www.app.kleo.network/profileV2/{slug}`;
+export const REDIRECT_TO_DASHBOARD_URL = `https://www.app.kleo.network/profile/{slug}`;
 
 export const KLEO_XP = 'KLEO XP';
 export const ACTIVITY_GRAPH_TITLE = 'Activity Graph';
@@ -64,6 +64,7 @@ export const RadarChartData = {
   labels: ['Math', 'Science'],
   datasets: [
     {
+      label: 'User Activity Graph',
       data: [20, 30],
       backgroundColor: 'rgba(127, 86, 217, 0.1)',
       borderColor: 'rgba(127, 86, 217, 1)',

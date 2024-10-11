@@ -1,41 +1,75 @@
 import { useEffect, useRef, useState } from 'react';
 import { Radar } from 'react-chartjs-2';
 import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from 'chart.js';
-import { Mock_Chart_Response, RadarChartData, RadarChartOptions } from '../../common/constants';
+import { RadarChartData, RadarChartOptions } from '../../common/constants';
+import { apiRequest } from '../../common/utils'; // Import the utility function
 
 // Register necessary components for Radar chart
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
-export const RadarChartComponent = () => {
+// Define types for the data coming from the API
+interface ActivityData {
+  label: string;
+  percentage: number;
+}
+
+export const RadarChartComponent: React.FC = () => {
   const chartRef = useRef<any>(null);
 
-  // State to hold the radar chart data
-  const [radarChartData, setRadarChartData] = useState(RadarChartData);
-  const [isLoading, setIsLoading] = useState(true);
-  const [highestLabel, setHighestLabel] = useState('');
-  const [highestValue, setHighestValue] = useState(-1);
-  const [highestValueIndex, setHighestValueIndex] = useState(-1);
+  // Define the shape of the chart's dataset
+  interface RadarChartDataset {
+    labels: string[];
+    datasets: {
+      label: string;  // Add this label field here
+      data: number[];
+      backgroundColor: string;
+      borderColor: string;
+      pointBackgroundColor: string;
+    }[];
+  }
 
-  // Simulating API call with mock data
-  // TODO: Replace this with actual API call
-  useEffect(() => {
-    setTimeout(() => {
+  // Initial Radar chart data shape with typing
+  const [radarChartData, setRadarChartData] = useState<RadarChartDataset>(RadarChartData);
+  const [isLoading, setIsLoading] = useState(true);
+  const [highestLabel, setHighestLabel] = useState<string>('');
+  const [highestValue, setHighestValue] = useState<number>(-1);
+  const [highestValueIndex, setHighestValueIndex] = useState<number>(-1);
+
+  // Function to fetch data from the API using the utility
+  const fetchChartData = async () => {
+    try {
+      // Call the API using the utility function
+      const response = await apiRequest<{ data: ActivityData[] }>('/get-user-graph', {
+        params: { address: 'user_address_here' }, // Replace with dynamic address
+      });
+      console.log('response', response.data)
+      const data = response.data.data;
+
       // Update chart data state with new labels and data from API
       setRadarChartData((prevState) => ({
         ...prevState,
-        labels: Mock_Chart_Response.map((item) => item.label),
+        labels: data.map((item) => item.label),
         datasets: [
           {
             ...prevState.datasets[0],
-            data: Mock_Chart_Response.map((item) => parseInt(item.percentage)),
+            data: data.map((item) => Math.round(item.percentage)),
           },
         ],
       }));
+
       setIsLoading(false);
-    }, 1000); // Simulate delay for API response
+    } catch (error) {
+      console.error('Error fetching chart data:', error);
+      setIsLoading(false); // Stop loading spinner even on error
+    }
+  };
+
+  // Call the API on component mount
+  useEffect(() => {
+    fetchChartData();
   }, []);
 
-  // Calculating Highest contributor category.
+  // Calculating highest contributor category
   useEffect(() => {
     if (!isLoading) {
       const index = radarChartData.datasets[0].data.indexOf(Math.max(...radarChartData.datasets[0].data));
@@ -70,9 +104,9 @@ export const RadarChartComponent = () => {
             'Loading...'
           ) : (
             <>
-              <span className="font-bold">{highestValue ? highestValue + '%' : 'N/A'} </span>
+              <span className="font-bold">{highestValue !== -1 ? highestValue + '%' : 'N/A'} </span>
               of your data quality is from
-              <span className="font-bold"> {highestLabel ? highestLabel : 'N/A'}</span>
+              <span className="font-bold"> {highestLabel || 'N/A'}</span>
             </>
           )}
         </div>
