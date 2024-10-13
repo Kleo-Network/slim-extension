@@ -1,14 +1,15 @@
 export interface UserData {
-  badges: string[];
-  content_tags: string[];
-  first_time_user: boolean;
-  identity_tags: string[];
-  kleo_points: number;
-  data_quality: number;
-  slug: string;
-  verified: boolean;
-  last_minted: number;
-  total_data_quantity: number;
+  badges?: string[];
+  content_tags?: string[];
+  first_time_user?: boolean;
+  identity_tags?: string[];
+  kleo_points?: number;
+  data_quality?: number;
+  slug?: string;
+  verified?: boolean;
+  last_minted?: number;
+  total_data_quantity?: number;
+  address?: string;
 }
 
 export interface VisitCountMap {

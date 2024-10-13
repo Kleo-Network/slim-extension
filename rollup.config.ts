@@ -11,6 +11,11 @@ import nodePolyfills from 'rollup-plugin-node-polyfills';
 import { visualizer } from 'rollup-plugin-visualizer';
 import path from 'path';
 import pkg from './package.json';
+import tailwindcss from 'tailwindcss';
+import url from 'rollup-plugin-url';
+import svgr from '@svgr/rollup';
+import autoprefixer from 'autoprefixer';
+import postcssImport from 'postcss-import';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -34,7 +39,7 @@ const commonPlugins = [
 
 // React Application (Popup or Options Page)
 const reactApp = {
-  input: 'src/App.tsx', // Entry point for your React app
+  input: 'src/index.tsx', // Entry point for your React app
   output: {
     sourcemap: !production,
     format: 'iife',
@@ -56,18 +61,21 @@ const reactApp = {
         '@babel/preset-typescript',
       ],
     }),
-    postcss({
-      extract: true,
-      minimize: production,
-      plugins: [require('autoprefixer')],
-    }),
     production &&
       visualizer({
         filename: 'stats-app.html',
         template: 'treemap', // or 'sunburst' for different visualization
       }),
+      postcss({
+        extract: true,
+        minimize: production,
+        plugins: [postcssImport(), tailwindcss(), autoprefixer()],
+      }),
+      svgr(),
     copy({
       targets: [
+        { src: 'src/logo/**/*', dest: 'dist/logo/' },
+        { src: 'src/assets/**/*', dest: 'dist/assets/' },
         { src: 'public/**/*', dest: 'dist/' },
         {
           src: 'manifest.json',
@@ -75,7 +83,7 @@ const reactApp = {
           transform: (contents) => {
             const jsonContent = JSON.parse(contents.toString());
             jsonContent.version = pkg.version;
-            jsonContent.description = pkg.description;
+            jsonContent.description = "description";
             return JSON.stringify(jsonContent, null, 2);
           },
         },

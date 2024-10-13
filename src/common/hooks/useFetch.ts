@@ -1,3 +1,5 @@
+// common/hooks/useFetch.ts
+
 import { Method } from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -15,15 +17,15 @@ type Options<T> = {
   signal?: AbortSignal;
   keepalive?: boolean;
   onSuccessfulFetch?: (data?: T) => void;
+  onError?: (error: any) => void;
 };
 
 type FetchResponse<T> = {
   data: T | null;
   status: FetchStatus;
   error: any;
-  fetchData: (url: string, options?: Options<T>) => void;
+  fetchData: (url: string, options?: Options<T>) => Promise<T | undefined>;
 };
-export const baseUrl = 'http://127.0.0.1:5001/api/v1/core' || 'https://api.kleo.network/api/v1/core';
 
 export enum FetchStatus {
   IDLE = 'idle',
@@ -34,29 +36,26 @@ export enum FetchStatus {
 }
 
 function useFetch<T>(url?: string, options?: Options<T>): FetchResponse<T> {
-  const navigate = useNavigate();
-
   const [data, setData] = useState<T | null>(null);
-  const [status, setStatus] = useState(FetchStatus.IDLE);
-  const [error, setError] = useState(null);
+  const [status, setStatus] = useState<FetchStatus>(FetchStatus.IDLE);
+  const [error, setError] = useState<any>(null);
   const [controller, setController] = useState<AbortController | null>(null);
-  const baseUrl = 'https://api.kleo.network/api/v1/core';
-  // const baseUrl = 'http://127.0.0.1:5001/api/v1/core';
+  const baseUrl = 'http://127.0.0.1:5001/api/v2/core' || 'https://api.kleo.network/api/v2/core';
 
   function getToken(): Promise<string> {
     return new Promise((resolve, reject) => {
-      chrome.storage.local.get('user_id', (storageData) => {
+      chrome.storage.local.get('user', (storageData: any) => {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError);
         } else {
-          const token = storageData.user_id?.token || '';
+          const token = storageData.user?.token || '';
           resolve(token);
         }
       });
     });
   }
 
-  const fetchData = async (url: string, options?: Options<T>) => {
+  const fetchData = async (url: string, options?: Options<T>): Promise<T | undefined> => {
     if (url === '') {
       return;
     }
@@ -70,38 +69,42 @@ function useFetch<T>(url?: string, options?: Options<T>): FetchResponse<T> {
       },
     };
 
-    fetch(`${baseUrl}/${url}`, {
-      method: options?.method || 'GET',
-      body: options?.body || null,
-      headers: options?.headers,
-      mode: options?.mode || 'cors',
-      cache: options?.cache || 'default',
-      credentials: options?.credentials || 'same-origin',
-      redirect: options?.redirect || 'follow',
-      referrerPolicy: options?.referrerPolicy || 'no-referrer',
-      integrity: options?.integrity || '',
-      keepalive: options?.keepalive || false,
-      signal: options?.signal,
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw Error('Could not fetch data for that resource');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setData(data);
-        setStatus(FetchStatus.SUCCESS);
-        if (options?.onSuccessfulFetch) {
-          options.onSuccessfulFetch(data);
-        }
-      })
-      .catch((err) => {
-        if (err.name !== 'AbortError') {
-          setError(err.message);
-          setStatus(FetchStatus.ERROR);
-        }
+    try {
+      const response = await fetch(`${baseUrl}/${url}`, {
+        method: options?.method || 'GET',
+        body: options?.body || null,
+        headers: options?.headers,
+        mode: options?.mode || 'cors',
+        cache: options?.cache || 'default',
+        credentials: options?.credentials || 'same-origin',
+        redirect: options?.redirect || 'follow',
+        referrerPolicy: options?.referrerPolicy || 'no-referrer',
+        integrity: options?.integrity || '',
+        keepalive: options?.keepalive || false,
+        signal: options?.signal,
       });
+
+      if (!response.ok) {
+        throw new Error('Could not fetch data for that resource');
+      }
+
+      const data = (await response.json()) as T;
+      setData(data);
+      setStatus(FetchStatus.SUCCESS);
+      if (options?.onSuccessfulFetch) {
+        options.onSuccessfulFetch(data);
+      }
+      return data;
+    } catch (err: any) {
+      if (err.name !== 'AbortError') {
+        setError(err.message);
+        setStatus(FetchStatus.ERROR);
+        if (options?.onError) {
+          options.onError(err);
+        }
+        throw err;
+      }
+    }
   };
 
   const fetchDataManually = (url: string, options?: Options<T>) => {
@@ -110,7 +113,7 @@ function useFetch<T>(url?: string, options?: Options<T>): FetchResponse<T> {
     }
     const newController = new AbortController();
     setController(newController);
-    fetchData(url || '', { ...(options || {}), signal: newController.signal });
+    return fetchData(url || '', { ...(options || {}), signal: newController.signal });
   };
 
   useEffect(() => {

@@ -26,9 +26,7 @@ const BATCH_DAYS = 7;
 export async function initializeUser(): Promise<void> {
     chrome.storage.local.get(['user'], (storageData: { [key: string]: any }) => {
         if (storageData?.user) {
-            chrome.storage.local.remove('user',function() {
-                
-               });
+            
             console.log('User already exists.');
         } else {
             generateEthereumKeyPair().then((keyPair) => {

@@ -18,7 +18,7 @@ module.exports = {
                  {
                   loader: "ts-loader",
                    options: {
-                    transpileOnly: true,
+                    transpileOnly: false,
                     }
                   }],
                exclude: /node_modules/,
@@ -75,7 +75,7 @@ module.exports = {
         ...getHtmlPlugins(["index"]),
     ],
     resolve: {
-        extensions: [".tsx", ".ts", ".js"],
+        extensions: [".tsx", ".ts", ".js", ".jsx"],
     },
     output: {
         path: path.join(__dirname, "dist/js"),
