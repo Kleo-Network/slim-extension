@@ -51,7 +51,7 @@ export const HomeComponent = ({ user }: HomeComponentProps) => {
 
   useEffect(() => {
     console.log("user", user.address)
-    fetchUserGraph(getUserGraphEndpoint(user.address || ''), {
+    fetchUserGraph(getUserGraphEndpoint('0x412F737f233895db386bc84139e861f7180b1f0F' || ''), {
       onSuccessfulFetch(data) {
         console.log("Data bata ty", data)
         if (!data?.processing) {
@@ -78,7 +78,11 @@ export const HomeComponent = ({ user }: HomeComponentProps) => {
   };
 
   const constructTweetText = (imageUrl: string): string => {
-    return `Check out my Activity! My data activity was most in 'Designing' followed by Coding and Politics. Got rewarded 230 Kleo Points for the same.
+    const top3Activities = graphData
+      .slice(0, 3)
+      .map((activity: { label: any; }) => activity.label)
+      .join(", ");
+    return `Check out my Activity! My top 3 activities are ${top3Activities}. My current kleo points are ${user.kleo_points || 0}.
 
 Create your profile and get Kleo points!
 @kleo_network #KLEO ${imageUrl} `; // Add a space after URL
@@ -134,21 +138,25 @@ Create your profile and get Kleo points!
           </div>
         </div>
       </div>
-      <div className="flex items-center justify-between w-full">
-        <div className="bg-white w-full flex-1 flex flex-col justify-between rounded-lg p-4 gap-4">
+      <div className="flex items-center justify-between w-full h-full">
+        <div className="bg-white w-full h-full flex-1 flex flex-col justify-between rounded-lg p-4 gap-4">
           {isProcessing ? <Processing /> :
-
-
-
-            <div><span className="font-semibold text-base text-black">{ACTIVITY_GRAPH_TITLE}</span><button className="size-9 rounded-full text-white" onClick={handleShareClick}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24">
-                <path d="M10.053,7.988l5.631,8.024h-1.497L8.566,7.988H10.053z M21,7v10	c0,2.209-1.791,4-4,4H7c-2.209,0-4-1.791-4-4V7c0-2.209,1.791-4,4-4h10C19.209,3,21,4.791,21,7z M17.538,17l-4.186-5.99L16.774,7	h-1.311l-2.704,3.16L10.552,7H6.702l3.941,5.633L6.906,17h1.333l3.001-3.516L13.698,17H17.538z"></path>
-              </svg>
-            </button><div className="w-full flex-1 max-h-[264px]">
+            <>
+              <div className='flex justify-between items-center w-full'>
+                <span className="font-semibold text-base text-black">
+                  {ACTIVITY_GRAPH_TITLE}
+                </span>
+                <button className="size-9 rounded-full text-white" onClick={handleShareClick}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24">
+                    <path d="M10.053,7.988l5.631,8.024h-1.497L8.566,7.988H10.053z M21,7v10	c0,2.209-1.791,4-4,4H7c-2.209,0-4-1.791-4-4V7c0-2.209,1.791-4,4-4h10C19.209,3,21,4.791,21,7z M17.538,17l-4.186-5.99L16.774,7	h-1.311l-2.704,3.16L10.552,7H6.702l3.941,5.633L6.906,17h1.333l3.001-3.516L13.698,17H17.538z"></path>
+                  </svg>
+                </button>
+              </div>
+              <div className="w-full flex-1 max-h-[264px]">
                 {graphData.length > 0 && <RadarChartComponent graph={graphData} />}
-              </div></div>
+              </div>
+            </>
           }
-
         </div>
       </div>
 
