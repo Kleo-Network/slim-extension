@@ -149,12 +149,7 @@ export async function executeSmartContractFunction(privateKey: string, rpcUrl: s
     const contract = new ethers.Contract(contractAddress, contractABI, wallet);
 
     try {
-        // Estimate gas limit
-        const gasLimit = await contract.estimateGas[functionName](...functionParams);
-
-        // Call the smart contract function
         const transactionResponse = await contract[functionName](...functionParams, {
-            gasLimit: gasLimit,
             gasPrice: (await provider.getFeeData()).gasPrice,
         });
         console.log('Transaction sent:', transactionResponse);
@@ -166,42 +161,4 @@ export async function executeSmartContractFunction(privateKey: string, rpcUrl: s
         console.error('Error executing transaction:', error);
     }
 }
-
-// async function main() {
-//     try {
-//         // Get the encrypted private key from storage
-//         const storageData = await getFromStorage('encryptedPrivateKey');
-
-//         if (storageData.encryptedPrivateKey) {
-//             // Decrypt the private key using the password
-//             const decryptedPrivateKey = await decryptPrivateKey(
-//                 storageData.encryptedPrivateKey,
-//                 'your_password_here'
-//             );
-
-//             // Prepare contract data
-//             const contractData = {
-//                 address: 'SMART_CONTRACT_ADDRESS',
-//                 abi: [
-//                     // Your contract's ABI
-//                 ],
-//                 functionName: 'yourFunctionName',
-//                 functionParams: ['param1', 'param2'],
-//             };
-
-//             // Execute the smart contract function
-//             await executeSmartContractFunction(
-//                 decryptedPrivateKey,
-//                 'YOUR_RPC_URL',
-//                 contractData
-//             );
-//         } else {
-//             console.error('Encrypted private key not found in storage');
-//         }
-//     } catch (error) {
-//         console.error('Error:', error);
-//     }
-// }
-
-// main();
 
