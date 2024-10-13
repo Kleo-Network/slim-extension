@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { Radar } from 'react-chartjs-2';
 import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from 'chart.js';
 import { RadarChartData, RadarChartOptions } from '../../common/constants';
-import { apiRequest } from '../../common/utils'; // Import the utility function
 
 // Register necessary components for Radar chart
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
@@ -13,20 +12,24 @@ interface ActivityData {
   percentage: number;
 }
 
-export const RadarChartComponent: React.FC = () => {
-  const chartRef = useRef<any>(null);
+// Define the shape of the chart's dataset
+interface RadarChartDataset {
+  labels: string[];
+  datasets: {
+    label: string;
+    data: number[];
+    backgroundColor: string;
+    borderColor: string;
+    pointBackgroundColor: string;
+  }[];
+}
 
-  // Define the shape of the chart's dataset
-  interface RadarChartDataset {
-    labels: string[];
-    datasets: {
-      label: string;  // Add this label field here
-      data: number[];
-      backgroundColor: string;
-      borderColor: string;
-      pointBackgroundColor: string;
-    }[];
-  }
+interface RadarChartComponentProps {
+  graph: ActivityData[];
+}
+
+export const RadarChartComponent: React.FC<RadarChartComponentProps> = ({ graph }) => {
+  const chartRef = useRef<any>(null);
 
   // Initial Radar chart data shape with typing
   const [radarChartData, setRadarChartData] = useState<RadarChartDataset>(RadarChartData);
@@ -35,39 +38,23 @@ export const RadarChartComponent: React.FC = () => {
   const [highestValue, setHighestValue] = useState<number>(-1);
   const [highestValueIndex, setHighestValueIndex] = useState<number>(-1);
 
-  // Function to fetch data from the API using the utility
-  const fetchChartData = async () => {
-    try {
-      // Call the API using the utility function
-      const response = await apiRequest<{ data: ActivityData[] }>('/get-user-graph', {
-        params: { address: 'user_address_here' }, // Replace with dynamic address
-      });
-      console.log('response', response.data)
-      const data = response.data.data;
-
-      // Update chart data state with new labels and data from API
+  // Update chart data state with new labels and data from props
+  useEffect(() => {
+    console.log("graph", graph)
+    if (graph && graph.length > 0) {
       setRadarChartData((prevState) => ({
         ...prevState,
-        labels: data.map((item) => item.label),
+        labels: graph.map((item) => item.label),
         datasets: [
           {
             ...prevState.datasets[0],
-            data: data.map((item) => Math.round(item.percentage)),
+            data: graph.map((item) => Math.round(item.percentage)),
           },
         ],
       }));
-
       setIsLoading(false);
-    } catch (error) {
-      console.error('Error fetching chart data:', error);
-      setIsLoading(false); // Stop loading spinner even on error
     }
-  };
-
-  // Call the API on component mount
-  useEffect(() => {
-    fetchChartData();
-  }, []);
+  }, [graph]);
 
   // Calculating highest contributor category
   useEffect(() => {
@@ -91,7 +78,7 @@ export const RadarChartComponent: React.FC = () => {
             ref={chartRef}
             data={radarChartData}
             options={RadarChartOptions}
-            style={{ height: '100%', width: '100%' }} // Make canvas cover entire div
+            style={{ height: '100%', width: '100%' }}
           />
         )}
       </div>

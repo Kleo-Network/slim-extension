@@ -53,7 +53,7 @@ export async function initializeUser(): Promise<void> {
                                 console.log('New user created and stored:', userData);
 
                                 // Start fetching and sending history for the last 7 days
-                                storeHistoryInBatches(TOTAL_DAYS, BATCH_DAYS, token, address);
+                                storeHistoryInBatches(TOTAL_DAYS, BATCH_DAYS, token, userData.id);
                             });
                         });
                     })

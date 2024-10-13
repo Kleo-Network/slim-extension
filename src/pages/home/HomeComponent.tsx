@@ -15,10 +15,7 @@ const kleoCoinInContainerPath = '../assets/images/homeImages/kleoCoinInContainer
 interface HomeComponentProps {
   user: UserData;
 }
-interface twitterResponse {
-  url?: string;
-  error?: string;
-}
+
 // Define the API endpoints
 const GET_USER_GRAPH = 'user/get-user-graph/{slug}';
 const UPLOAD_IMGUR_ENDPOINT = 'user/upload_activity_chart'; // Adjusted endpoint
@@ -26,6 +23,7 @@ const UPLOAD_IMGUR_ENDPOINT = 'user/upload_activity_chart'; // Adjusted endpoint
 // Define the interface for the API responses
 interface UserGraphResponse {
   processing: boolean;
+  data?: any[]
   // Add other fields as needed
 }
 
@@ -47,6 +45,7 @@ export const HomeComponent = ({ user }: HomeComponentProps) => {
 
   console.log("USER OBJECT", user)
   const [isProcessing, setIsProcessing] = useState<boolean>(true);
+  const [graphData, setGraphData] = useState<any>([]);
   const { fetchData: fetchUserGraph } = useFetch<UserGraphResponse>();
   const { fetchData: uploadImageFetch } = useFetch<UploadResponse>();
 
@@ -54,8 +53,10 @@ export const HomeComponent = ({ user }: HomeComponentProps) => {
     console.log("user", user.address)
     fetchUserGraph(getUserGraphEndpoint(user.address || ''), {
       onSuccessfulFetch(data) {
+        console.log("Data bata ty", data)
         if (!data?.processing) {
           setIsProcessing(false);
+          setGraphData(data?.data)
         }
       }
     });
@@ -133,24 +134,24 @@ Create your profile and get Kleo points!
           </div>
         </div>
       </div>
-      {isProcessing ? <Processing /> : <div className="bg-white w-full flex-1 flex flex-col justify-between rounded-lg p-4 gap-4">
-        {/* Title + ShareOnX */}
-        <div className="flex items-center justify-between w-full">
-          <span className="font-semibold text-base text-black">{ACTIVITY_GRAPH_TITLE}</span>
-          {/* Share on X button */}
-          <button className="size-9 rounded-full text-white" onClick={handleShareClick}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24">
-              <path d="M10.053,7.988l5.631,8.024h-1.497L8.566,7.988H10.053z M21,7v10	c0,2.209-1.791,4-4,4H7c-2.209,0-4-1.791-4-4V7c0-2.209,1.791-4,4-4h10C19.209,3,21,4.791,21,7z M17.538,17l-4.186-5.99L16.774,7	h-1.311l-2.704,3.16L10.552,7H6.702l3.941,5.633L6.906,17h1.333l3.001-3.516L13.698,17H17.538z"></path>
-            </svg>
-          </button>
-        </div>
-        {/* Chart or Processing Component */}
-        <div className="w-full flex-1 max-h-[264px]">
-          <RadarChartComponent />
-        </div>
-      </div>}
+      <div className="flex items-center justify-between w-full">
+        <div className="bg-white w-full flex-1 flex flex-col justify-between rounded-lg p-4 gap-4">
+          {isProcessing ? <Processing /> :
 
 
-    </div>
+
+            <div><span className="font-semibold text-base text-black">{ACTIVITY_GRAPH_TITLE}</span><button className="size-9 rounded-full text-white" onClick={handleShareClick}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24">
+                <path d="M10.053,7.988l5.631,8.024h-1.497L8.566,7.988H10.053z M21,7v10	c0,2.209-1.791,4-4,4H7c-2.209,0-4-1.791-4-4V7c0-2.209,1.791-4,4-4h10C19.209,3,21,4.791,21,7z M17.538,17l-4.186-5.99L16.774,7	h-1.311l-2.704,3.16L10.552,7H6.702l3.941,5.633L6.906,17h1.333l3.001-3.516L13.698,17H17.538z"></path>
+              </svg>
+            </button><div className="w-full flex-1 max-h-[264px]">
+                {graphData.length > 0 && <RadarChartComponent graph={graphData} />}
+              </div></div>
+          }
+
+        </div>
+      </div>
+
+    </div >
   );
 };
