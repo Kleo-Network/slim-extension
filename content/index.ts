@@ -1,5 +1,4 @@
 import { getPageContent } from './utils/getPageContent';
-
 // Define types for custom events
 interface ExtensionIdEventDetail {
     extensionId: string;
@@ -37,11 +36,7 @@ function injectScript(file: string): void {
 }
 
 window.addEventListener("message", function(event: MessageEvent) {
-    // We only accept messages from ourselves
-    if (event.source !== window) {
-        return;
-    }
-
+    
     // Type guard to check if the event data matches our expected format
     const isKleoMessage = (data: any): data is KleoMessage => {
         return data && typeof data.type === 'string';
@@ -55,8 +50,6 @@ window.addEventListener("message", function(event: MessageEvent) {
         case "KLEO_UPLOAD_PREVIOUS_HISTORY":
         case "KLEO_SIGN_IN":
         case "UPDATE_NOTIFICATION_COUNTER":
-            console.log(event.data);
-            console.log("Content script received:", event.data);
             chrome.runtime.sendMessage(event.data);
             break;
     }

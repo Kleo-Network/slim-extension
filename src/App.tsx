@@ -59,7 +59,7 @@ function App(): ReactElement {
         setSlug(storageData.user.id);
       }
     });
-   
+
   }, []);
 
   const GET_USER_DETAIL = 'user/get-user/{slug}';
@@ -68,15 +68,13 @@ function App(): ReactElement {
   function getUserDetails(slug: string) {
     return GET_USER_DETAIL.replace('{slug}', slug);
   }
-  
+
 
   useEffect(() => {
     try {
-      console.log(getUserDetails(slug))
       fetchUserData(getUserDetails(slug), {
         onSuccessfulFetch(data) {
           if (data) {
-            console.log("data", data);
             setUser(data)
             navigate('/home')
           }

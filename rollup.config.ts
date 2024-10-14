@@ -83,7 +83,6 @@ const reactApp = {
           transform: (contents) => {
             const jsonContent = JSON.parse(contents.toString());
             jsonContent.version = pkg.version;
-            jsonContent.description = "description";
             return JSON.stringify(jsonContent, null, 2);
           },
         },

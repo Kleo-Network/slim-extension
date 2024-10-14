@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
     "name": "Kleo Network",
-    "version": "3.0",
-    "description": "Kleo Network is a user consumption DATA DAO. Kleo ",
+    "version": "3.1",
+    "description": "Kleo Network is a user consumption DATA DAO. Earn and use your data to it's maximum potential.",
     "background": {
       "service_worker": "background.js"
     },

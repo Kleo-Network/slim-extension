@@ -73,7 +73,7 @@ export function getFromStorage(key: string): Promise<{ [key: string]: any }> {
 }
 
 // Function to decrypt the private key
-export async function decryptPrivateKey(encryptedData: { iv: string; data: string }, password: string): Promise<string> {
+export async function decryptPrivateKey(encryptedData: { iv: string; encryptedPrivateKey: string }, password: string): Promise<string> {
     const enc = new TextEncoder();
     const dec = new TextDecoder();
 
@@ -91,7 +91,7 @@ export async function decryptPrivateKey(encryptedData: { iv: string; data: strin
     );
 
     const iv = base64ToArrayBuffer(encryptedData.iv);
-    const data = base64ToArrayBuffer(encryptedData.data);
+    const data = base64ToArrayBuffer(encryptedData.encryptedPrivateKey);
 
     const decryptedData = await crypto.subtle.decrypt(
         {
@@ -149,14 +149,14 @@ export async function executeSmartContractFunction(privateKey: string, rpcUrl: s
     const contract = new ethers.Contract(contractAddress, contractABI, wallet);
 
     try {
+        const nonce = await provider.getTransactionCount(wallet.address, 'latest');
         const transactionResponse = await contract[functionName](...functionParams, {
             gasPrice: (await provider.getFeeData()).gasPrice,
+            nonce: nonce 
         });
-        console.log('Transaction sent:', transactionResponse);
-
         // Wait for the transaction to be mined
         const receipt = await transactionResponse.wait();
-        console.log('Transaction mined:', receipt);
+        console.log("transaction hash", receipt);
     } catch (error) {
         console.error('Error executing transaction:', error);
     }

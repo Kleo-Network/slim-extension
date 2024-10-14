@@ -43,17 +43,14 @@ type CanvasSource = HTMLCanvasElement | HTMLImageElement;
 
 export const HomeComponent = ({ user }: HomeComponentProps) => {
 
-  console.log("USER OBJECT", user)
   const [isProcessing, setIsProcessing] = useState<boolean>(true);
   const [graphData, setGraphData] = useState<any>([]);
   const { fetchData: fetchUserGraph } = useFetch<UserGraphResponse>();
   const { fetchData: uploadImageFetch } = useFetch<UploadResponse>();
 
   useEffect(() => {
-    console.log("user", user.address)
-    fetchUserGraph(getUserGraphEndpoint('0x412F737f233895db386bc84139e861f7180b1f0F' || ''), {
+    fetchUserGraph(getUserGraphEndpoint(user.address || ''), {
       onSuccessfulFetch(data) {
-        console.log("Data bata ty", data)
         if (!data?.processing) {
           setIsProcessing(false);
           setGraphData(data?.data)
@@ -83,9 +80,7 @@ export const HomeComponent = ({ user }: HomeComponentProps) => {
       .map((activity: { label: any; }) => activity.label)
       .join(", ");
     return `Check out my Activity! My top 3 activities are ${top3Activities}. My current kleo points are ${user.kleo_points || 0}.
-
-Create your profile and get Kleo points!
-@kleo_network #KLEO ${imageUrl} `; // Add a space after URL
+     Create your profile and get Kleo points! @kleo_network #KLEO ${imageUrl} `; // Add a space after URL
   };
 
   const handleShareClick = async () => {
@@ -152,7 +147,7 @@ Create your profile and get Kleo points!
                   </svg>
                 </button>
               </div>
-              <div className="w-full flex-1 max-h-[264px]">
+              <div className="w-full flex-1 max-h-[284px]">
                 {graphData.length > 0 && <RadarChartComponent graph={graphData} />}
               </div>
             </>

@@ -12,12 +12,11 @@ export function stringDoesNotContainAnyFromArray(str: string): boolean {
 
 export async function decryptPrivateKeyFromStorage(password: string): Promise<string> {
     // Retrieve the encrypted private key from storage
-    const storageData = await getFromStorage('encryptedPrivateKey');
-
-    if (storageData.encryptedPrivateKey) {
+    const storageData = await getFromStorage('user');
+    const encryptedPrivateKey = storageData.user.encryptedPrivateKey;
+    if (encryptedPrivateKey) {
         try {
-            const encryptedData = storageData.encryptedPrivateKey; // Should be { iv: string, data: string }
-            const decryptedPrivateKey = await decryptPrivateKey(encryptedData, password);
+            const decryptedPrivateKey = await decryptPrivateKey({iv: storageData.user.iv, encryptedPrivateKey: storageData.user.encryptedPrivateKey}, password);
             return decryptedPrivateKey;
         } catch (error) {
             throw new Error('Error decrypting private key: ' + error);

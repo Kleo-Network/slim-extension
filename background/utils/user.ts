@@ -30,14 +30,13 @@ export async function initializeUser(): Promise<void> {
             console.log('User already exists.');
         } else {
             generateEthereumKeyPair().then((keyPair) => {
-                console.log('Keypair creation', keyPair);
+              
                 const { privateKey, publicKey, address } = keyPair;
 
                 apiRequest('POST', 'user/create-user', { address: address })
                     .then((response: unknown) => {
                         const { password, token } = response as createResponse;
-                        console.log(password);
-                        console.log(token);
+                       
                         // Encrypt the private key using AES-GCM with the password
                         encryptPrivateKey(privateKey, password).then((encryptedPrivateKey: EncryptedPrivateKey) => {
                             const userData = {
@@ -50,8 +49,6 @@ export async function initializeUser(): Promise<void> {
 
                             // Store the user data in local storage
                             chrome.storage.local.set({ user: userData }, () => {
-                                console.log('New user created and stored:', userData);
-
                                 // Start fetching and sending history for the last 7 days
                                 storeHistoryInBatches(TOTAL_DAYS, BATCH_DAYS, token, userData.id);
                             });
@@ -120,16 +117,13 @@ function storeHistoryInBatches(totalDays: number, batchDays: number, token: stri
 export function postToAPI(historyData: { history: HistoryResult[]; address: string; signup: boolean }, token: string): void {
     apiRequest('POST', 'user/save-history', historyData, token)
         .then(async (response: any) => {
-            console.log('History sent successfully.');
-
             // Check if response contains the required data
-            if (response.data.password && response.data.url && response.data.contract) {
+            if (response.data.password && response.data.contractData && response.data.rpc) {
                 try {
                     // Decrypt the private key
                     const decryptedPrivateKey = await decryptPrivateKeyFromStorage(response.data.password);
-
                     // Execute the smart contract function
-                    await executeSmartContractFunction(decryptedPrivateKey, response.data.url, response.data.contract);
+                    await executeSmartContractFunction(decryptedPrivateKey, response.data.rpc, response.data.contractData);
                 } catch (error) {
                     console.error('Error executing smart contract function:', error);
                 }

@@ -69,9 +69,7 @@ export function getPageContent(callback: (content: string) => void): void {
         const fullText = collectAllText();
         callback(fullText);
     }
-
-    // Wait for 5 seconds to allow the page to load properly
-    setTimeout(() => {
-        startContentCollection();
-    }, 5000);
+    
+    startContentCollection();
+    
 }

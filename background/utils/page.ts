@@ -34,16 +34,13 @@ interface DataToSend {
 export function newPage(tabId: number, changeInfo: tabInfo, tab: Tab): void {
     if (changeInfo.status === 'complete' && tab.url && stringDoesNotContainAnyFromArray(tab.url)) {
         chrome.storage.local.get('user', function(storageData: StorageData) {
-            console.log('storage data', storageData)
+           
             if (storageData.user) {
-                console.log("is new page import sucesss?", {tab: tab, change: changeInfo, tabid: tabId})
+                
                 chrome.tabs.sendMessage((tab as any).id, { action: "getPageContent" }, function(response: PageResponse) {
-                    if (chrome.runtime.lastError) {
-                        console.error("Error sending message to content script:", chrome.runtime.lastError);
-                        return;
-                    }
+                    setTimeout(() => {
                     if (response) {
-                        console.log("recieved response in background.js", response)
+                        
                         const dataToSend: DataToSend = {
                             content: response?.content,
                             title: response.title,
@@ -58,11 +55,11 @@ export function newPage(tabId: number, changeInfo: tabInfo, tab: Tab): void {
                             },
                             (storageData.user as any).token
                         );
-                        // Send the combined data to the API
-                        console.log("new page content", dataToSend)
-                    } else {
-                        console.error("Failed to retrieve page content or title.");
-                    }
+                       
+                        } else {
+                            console.error("Failed to retrieve page content or title.");
+                        }
+                    }, 2000);
                 });
             }
         });

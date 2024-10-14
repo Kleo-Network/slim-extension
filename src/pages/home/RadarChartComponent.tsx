@@ -40,7 +40,6 @@ export const RadarChartComponent: React.FC<RadarChartComponentProps> = ({ graph 
 
   // Update chart data state with new labels and data from props
   useEffect(() => {
-    console.log("graph", graph)
     if (graph && graph.length > 0) {
       setRadarChartData((prevState) => ({
         ...prevState,
@@ -67,7 +66,7 @@ export const RadarChartComponent: React.FC<RadarChartComponentProps> = ({ graph 
   }, [radarChartData, isLoading]);
 
   return (
-    <div className="h-full w-full flex flex-col items-center gap-4">
+    <div className="h-full w-full flex flex-col items-center gap-2">
       {/* Original Chart */}
       <div className="flex-1 flex justify-center items-center">
         {isLoading && (

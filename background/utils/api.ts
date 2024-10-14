@@ -40,7 +40,6 @@ export async function apiRequest(
     try {
         const response = await fetch(apiEndpoint, options);
         const responseData = await response.json(); // Or use response.json() if the response is JSON
-        console.log("response:", responseData);
         return responseData;
     } catch (error) {
         console.error("Error in API request:", error);
