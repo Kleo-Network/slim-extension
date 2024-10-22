@@ -1,5 +1,6 @@
 import { stringDoesNotContainAnyFromArray } from './helpers';
 import {postToAPI} from  './user.ts'
+
 interface tabInfo {
     status?: string;
 }
@@ -29,6 +30,7 @@ interface DataToSend {
     title?: string;
     url?: string;
     user?: user;
+    lastVisitTime?: number;
 }
 
 export function newPage(tabId: number, changeInfo: tabInfo, tab: Tab): void {
@@ -43,9 +45,9 @@ export function newPage(tabId: number, changeInfo: tabInfo, tab: Tab): void {
                         
                         const dataToSend: DataToSend = {
                             content: response?.content,
-                            title: response.title,
+                            title: response?.title,
                             url: tab.url!,
-                            user: storageData.user
+                            lastVisitTime: new Date().getTime()
                         };
                         postToAPI(
                             {

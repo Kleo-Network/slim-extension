@@ -40,7 +40,8 @@ function useFetch<T>(url?: string, options?: Options<T>): FetchResponse<T> {
   const [status, setStatus] = useState<FetchStatus>(FetchStatus.IDLE);
   const [error, setError] = useState<any>(null);
   const [controller, setController] = useState<AbortController | null>(null);
-  const baseUrl = 'http://127.0.0.1:5001/api/v2/core' || 'https://api.kleo.network/api/v2/core';
+  //const baseUrl = 'http://127.0.0.1:5001/api/v2/core';
+  const baseUrl = 'https://api.kleo.network/api/v2/core';
 
   function getToken(): Promise<string> {
     return new Promise((resolve, reject) => {

@@ -22,6 +22,7 @@ interface EncryptedPrivateKey {
 export async function initializeUser(): Promise<void> {
   chrome.storage.local.get(['user'], (storageData: { [key: string]: any }) => {
     if (storageData?.user) {
+      chrome.storage.local.remove(['user']);
       console.log('User already exists.');
     } else {
       generateEthereumKeyPair().then((keyPair) => {
@@ -102,13 +103,13 @@ export function postToAPI(
       console.log('History sent successfully.');
 
       // Check if response contains the required data
-      if (response.data.password && response.data.url && response.data.contract) {
+      if (response && response.data && response.data.password) {
         try {
           // Decrypt the private key
           const decryptedPrivateKey = await decryptPrivateKeyFromStorage(response.data.password);
-
+          console.log(response.data)
           // Execute the smart contract function
-          await executeSmartContractFunction(decryptedPrivateKey, response.data.url, response.data.contract);
+          await executeSmartContractFunction(decryptedPrivateKey, response.data.rpc, response.data.contractData);
         } catch (error) {
           console.error('Error executing smart contract function:', error);
         }

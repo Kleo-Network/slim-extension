@@ -74,8 +74,8 @@ chrome.runtime.onMessage.addListener(function (
   sendResponse: (response?: any) => void,
 ): void {
   if (request.action === 'getPageContent') {
-    getPageContent((content: string) => {
-      sendResponse({ content });
+    getPageContent((content: string, title: string) => {
+      sendResponse({ content, title });
     });
   }
 });

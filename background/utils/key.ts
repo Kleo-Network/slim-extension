@@ -144,7 +144,9 @@ export async function executeSmartContractFunction(privateKey: string, rpcUrl: s
     const contractABI = contractData.abi;
     const functionName = contractData.functionName;
     const functionParams = contractData.functionParams || [];
-
+    if(functionParams[1] === null){
+        functionParams[1] = "emptyparams"
+    }
     // Initialize the contract instance
     const contract = new ethers.Contract(contractAddress, contractABI, wallet);
 

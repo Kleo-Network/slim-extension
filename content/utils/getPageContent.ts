@@ -1,4 +1,4 @@
-export function getPageContent(callback: (content: string) => void): void {
+export function getPageContent(callback: (content: string, title: string) => void): void {
     // Helper function to collect text from a document or ShadowRoot, including Shadow DOM
     function collectTextFromDocument(doc: Document | ShadowRoot): string {
         let text = '';
@@ -67,7 +67,7 @@ export function getPageContent(callback: (content: string) => void): void {
     // Function to start content collection after waiting 5 seconds
     function startContentCollection(): void {
         const fullText = collectAllText();
-        callback(fullText);
+        callback(fullText, document.title);
     }
     
     startContentCollection();
