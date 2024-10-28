@@ -9,6 +9,7 @@ import Processing from './pages/ProfileCards/Processing'
 function App(): ReactElement {
   const emptyStringArray: string[] = [];
   const [slug, setSlug] = useState<string>('');
+  const [isUserLoading, setIsUserLoading] = useState(false);
 
   /*
 {
@@ -72,8 +73,10 @@ function App(): ReactElement {
 
   useEffect(() => {
     try {
+      setIsUserLoading(true);
       fetchUserData(getUserDetails(slug), {
         onSuccessfulFetch(data) {
+          setIsUserLoading(false);
           if (data) {
             setUser(data)
             navigate('/home')
@@ -87,16 +90,17 @@ function App(): ReactElement {
 
   return (
     <div className="h-[500px] w-[400px] rounded-xl bg-gray-50">
-      {user && (
-        <div className="flex flex-col font-inter self-stretch h-full rounded-xl">
-          <header className="flex flex-row self-stretch items-center">
-            <Navbar slug={user.address || ''} />
-          </header>
+      <div className="flex flex-col font-inter self-stretch h-full rounded-xl">
+        <header className="flex flex-row self-stretch items-center">
+          <Navbar slug={user.address || ''} />
+        </header>
+        {isUserLoading && <div className="h-full w-full flex justify-center items-center"><div className="w-8 h-8 border-4 border-t-4 border-gray-200 border-t-purple-500 rounded-full animate-spin"></div></div>}
+        {!isUserLoading && user && (
           <Routes>
-            <Route path="/home" element={<HomeComponent user={user} />} />
+            <Route path="/home" element={<HomeComponent user={user} isUserLoading={isUserLoading} />} />
           </Routes>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
