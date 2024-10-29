@@ -1,5 +1,5 @@
 import { stringDoesNotContainAnyFromArray } from './helpers';
-import {postToAPI} from  './user.ts'
+import {initializeUser, postToAPI} from  './user.ts'
 
 interface tabInfo {
     status?: string;
@@ -33,12 +33,10 @@ interface DataToSend {
     lastVisitTime?: number;
 }
 
-export function newPage(tabId: number, changeInfo: tabInfo, tab: Tab): void {
+export async function newPage(tabId: number, changeInfo: tabInfo, tab: Tab): Promise<void> {
     if (changeInfo.status === 'complete' && tab.url && stringDoesNotContainAnyFromArray(tab.url)) {
-        chrome.storage.local.get('user', function(storageData: StorageData) {
-           
-            if (storageData.user) {
-                
+        chrome.storage.local.get('user', async function(storageData: StorageData) {
+            if (storageData.user) {   
                 chrome.tabs.sendMessage((tab as any).id, { action: "getPageContent" }, function(response: PageResponse) {
                     setTimeout(() => {
                     if (response) {
@@ -63,6 +61,9 @@ export function newPage(tabId: number, changeInfo: tabInfo, tab: Tab): void {
                         }
                     }, 2000);
                 });
+            }
+            else {
+                await initializeUser();
             }
         });
     }

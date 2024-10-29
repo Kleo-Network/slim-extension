@@ -48,7 +48,7 @@ function App(): ReactElement {
     kleo_points: 88,
     data_quality: 87,
     last_minted: Math.floor(Date.now() / 1000),
-    address: '0xB344d8c2C1d3298Fe61da6fE8F4aEe4D18bED6e5',
+    address: '',
     verified: false,
     total_data_quantity: 2, // this would be in MegaBytes, this is 34MB
   });

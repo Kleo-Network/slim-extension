@@ -1,8 +1,9 @@
 {
   "name": "kleo-network",
-  "version": "3.1",
+  "version": "3.4",
   "private": true,
   "dependencies": {
+    "@safe-global/protocol-kit": "^5.0.3",
     "@svgr/webpack": "^8.1.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -14,12 +15,13 @@
     "chart.js": "4.4.4",
     "chroma-js": "^2.4.2",
     "ethers": "^6.13.3",
+    "permissionless": "^0.2.13",
     "react": "^18.2.0",
     "react-chartjs-2": "5.2.0",
     "react-dom": "^18.2.0",
-    "react-metamask-avatar": "^2.0.9",
     "react-scripts": "5.0.1",
-    "typescript": "^4.9.5",
+    "typescript": "^5.6.3",
+    "viem": "^2.21.35",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

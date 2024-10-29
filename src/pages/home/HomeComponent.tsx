@@ -1,8 +1,7 @@
 // HomeComponent.tsx
 
 import { useEffect, useState } from 'react';
-import { MetaMaskAvatar } from 'react-metamask-avatar';
-import useFetch from '../../common/hooks/useFetch';
+import useFetch, { FetchStatus } from '../../common/hooks/useFetch';
 import { ACTIVITY_GRAPH_TITLE, KLEO_XP } from '../../common/constants';
 import { UserData } from '../../common/interface';
 import { truncateText } from '../../common/utils';
@@ -134,7 +133,7 @@ Create your profile and get Kleo points! @kleo_network #KLEO ${imageUrl}`;
     <div className="h-full w-full bg-gray-blue-100 p-4 flex gap-4 flex-col">
       <div className="flex justify-between items-center w-full h-[42px]">
         <div className="flex flex-1 justify-start items-center gap-2 h-full mr-8">
-          <MetaMaskAvatar address={user.address || ''} size={36} />
+
           <div className="flex flex-col items-start justify-center h-full w-fit">
             <div className="font-semibold text-base text-gray-700">{truncateText(user.address || '', 20)}</div>
 
