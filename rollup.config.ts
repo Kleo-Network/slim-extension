@@ -92,13 +92,15 @@ const reactApp = {
 };
 
 // Background Scripts
+// Background Scripts
 const background = {
   input: 'background/index.ts',
   output: {
     sourcemap: !production,
-    format: 'iife',
+    format: 'es',
     name: 'background',
     file: 'dist/background.js',
+    inlineDynamicImports: true, // Add this line
   },
   plugins: [
     ...commonPlugins,
@@ -120,6 +122,7 @@ const background = {
       }),
   ],
 };
+
 
 // Content Script
 const contentScript = {
