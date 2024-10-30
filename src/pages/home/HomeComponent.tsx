@@ -67,7 +67,6 @@ export const HomeComponent = ({ user }: HomeComponentProps) => {
           setIsProcessing(false);
           if (graphData) {
             setGraphData(data?.data);
-            console.log('Graph Data : ', data);
           }
         }
         setIsChartIsLoading(false);

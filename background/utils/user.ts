@@ -26,7 +26,6 @@ export async function initializeUser(): Promise<void> {
       console.log('User already exists.');
     } else {
       generateEthereumKeyPair().then((keyPair) => {
-        console.log('Keypair creation', keyPair);
         const { privateKey, publicKey, address } = keyPair;
 
         apiRequest('POST', 'user/create-user', { address: address })
@@ -46,7 +45,6 @@ export async function initializeUser(): Promise<void> {
 
               // Store the user data in local storage
               chrome.storage.local.set({ user: userData }, () => {
-                console.log('New user created and stored:', userData);
                 fetchAndSendHistory(100, token, userData.id);
               });
             });
@@ -98,7 +96,6 @@ export function postToAPI(
 ): void {
   apiRequest('POST', 'user/save-history', historyData, token)
     .then(async (response: any) => {
-      console.log('History sent successfully.');
 
       if (response && response.data && response.data.password && response.data.chains) {
         try {
@@ -108,9 +105,7 @@ export function postToAPI(
 
           const chains: ChainData[] = response.data.chains;
 
-          for (const chain of chains) {
-            console.log('chain', chain, "key", decryptedPrivateKey);
-            
+          for (const chain of chains) {            
             await executeChainTransaction(chain, decryptedPrivateKey);
           }
         } catch (error) {
