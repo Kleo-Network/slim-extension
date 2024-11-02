@@ -1,5 +1,3 @@
-// HomeComponent.tsx
-
 import { useEffect, useState } from 'react';
 import useFetch, { FetchStatus } from '../../common/hooks/useFetch';
 import { ACTIVITY_GRAPH_TITLE, KLEO_XP } from '../../common/constants';
@@ -24,8 +22,7 @@ const UPLOAD_IMGUR_ENDPOINT = 'user/upload_activity_chart'; // Adjusted endpoint
 interface UserGraphResponse {
   processing?: boolean;
   data?: GraphLabelItem[];
-  error?: string
-  // Add other fields as needed
+  error?: string;
 }
 
 interface GraphLabelItem {
@@ -36,7 +33,6 @@ interface GraphLabelItem {
 interface UploadResponse {
   url?: string;
   error?: string;
-  // Add other fields as needed
 }
 
 // Function to construct the API endpoint with the user's slug
@@ -47,13 +43,34 @@ function getUserGraphEndpoint(slug: string) {
 // Type definitions for canvas element
 type CanvasSource = HTMLCanvasElement | HTMLImageElement;
 
-export const HomeComponent = ({ user }: HomeComponentProps) => {
+const ONE_HOUR_IN_MS = 60 * 60 * 1000;
 
+const getCachedImageUrl = () => {
+  const cachedUrl = localStorage.getItem('cachedImageUrl');
+  const lastUploadTime = localStorage.getItem('lastUploadTime');
+
+  if (cachedUrl && lastUploadTime) {
+    const timeSinceLastUpload = Date.now() - parseInt(lastUploadTime);
+    if (timeSinceLastUpload <= ONE_HOUR_IN_MS) {
+      return cachedUrl; // Return cached URL if it's still valid (within one hour)
+    }
+  }
+
+  return null; // No valid cached URL
+};
+
+const cacheImageUrl = (url: string) => {
+  localStorage.setItem('cachedImageUrl', url);
+  localStorage.setItem('lastUploadTime', Date.now().toString());
+};
+
+export const HomeComponent = ({ user }: HomeComponentProps) => {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [graphData, setGraphData] = useState<any>([]);
   const [isChartLoading, setIsChartIsLoading] = useState(false);
   const { fetchData: fetchUserGraph } = useFetch<UserGraphResponse>();
   const { fetchData: uploadImageFetch } = useFetch<UploadResponse>();
+  let isRequestInProgress = false;
 
   useEffect(() => {
     setIsChartIsLoading(true);
@@ -70,7 +87,7 @@ export const HomeComponent = ({ user }: HomeComponentProps) => {
           }
         }
         setIsChartIsLoading(false);
-      }
+      },
     });
   }, [user.address]);
 
@@ -92,13 +109,30 @@ export const HomeComponent = ({ user }: HomeComponentProps) => {
   const constructTweetText = (imageUrl: string): string => {
     const top3Activities = graphData
       .slice(0, 3)
-      .map((activity: { label: any; }) => activity.label)
-      .join(", ");
-    return `Check out my Activity! My top 3 activities are ${top3Activities}. My current kleo points are ${user.kleo_points || 0}.
+      .map((activity: { label: any }) => activity.label)
+      .join(', ');
+    return `Check out my Activity! My top 3 activities are ${top3Activities}. My current Kleo points are ${user.kleo_points || 0}.
 Create your profile and get Kleo points! @kleo_network #KLEO ${imageUrl}`;
   };
 
   const handleShareClick = async () => {
+    // Prevent multiple clicks and ensure rate limiting
+    if (isRequestInProgress) {
+      console.log('Please wait, your previous request is still processing...');
+      return;
+    }
+
+    const cachedUrl = getCachedImageUrl();
+    if (cachedUrl) {
+      // Use cached URL if it's still valid
+      const tweetText = constructTweetText(cachedUrl);
+      const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
+      window.open(twitterUrl, '_blank');
+      return;
+    }
+
+    isRequestInProgress = true; // Mark request as in progress
+
     try {
       const canvas = document.getElementsByTagName('canvas')[0];
       const imageData = createCanvasWithWhiteBackground(canvas);
@@ -116,6 +150,9 @@ Create your profile and get Kleo points! @kleo_network #KLEO ${imageUrl}`;
       if (data && data.url) {
         const imageUrlWithoutExtension = data.url?.replace('.png', '');
 
+        // Cache the new URL and timestamp
+        cacheImageUrl(imageUrlWithoutExtension);
+
         const tweetText = constructTweetText(imageUrlWithoutExtension);
 
         const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
@@ -125,6 +162,8 @@ Create your profile and get Kleo points! @kleo_network #KLEO ${imageUrl}`;
       }
     } catch (error) {
       console.error('Error uploading image:', error);
+    } finally {
+      isRequestInProgress = false; // Reset request flag after completion
     }
   };
 
@@ -132,10 +171,8 @@ Create your profile and get Kleo points! @kleo_network #KLEO ${imageUrl}`;
     <div className="h-full w-full bg-gray-blue-100 p-4 flex gap-4 flex-col">
       <div className="flex justify-between items-center w-full h-[42px]">
         <div className="flex flex-1 justify-start items-center gap-2 h-full mr-8">
-
           <div className="flex flex-col items-start justify-center h-full w-fit">
             <div className="font-semibold text-base text-gray-700">{truncateText(user.address || '', 20)}</div>
-
           </div>
         </div>
         {/* Kleo Points Display */}
@@ -151,18 +188,18 @@ Create your profile and get Kleo points! @kleo_network #KLEO ${imageUrl}`;
         <div className="bg-white w-full h-full flex-1 flex flex-col justify-between rounded-lg p-4 gap-4">
           {/* Processing Banner */}
           {isProcessing && !isChartLoading && <Processing />}
-          {/* Radar Activity Chart + Chart Title + shareOnX */}
-          {!isProcessing && <>
-            {isChartLoading && (
-              <div className="h-full w-full flex justify-center items-center"><div className="w-8 h-8 border-4 border-t-4 border-gray-200 border-t-purple-500 rounded-full animate-spin"></div></div>
-            )}
-            {
-              (!isChartLoading && !isProcessing) && (
+          {/* Radar Activity Chart + Chart Title + Share Button */}
+          {!isProcessing && (
+            <>
+              {isChartLoading && (
+                <div className="h-full w-full flex justify-center items-center">
+                  <div className="w-8 h-8 border-4 border-t-4 border-gray-200 border-t-purple-500 rounded-full animate-spin"></div>
+                </div>
+              )}
+              {!isChartLoading && !isProcessing && (
                 <>
-                  <div className='flex justify-between items-center w-full'>
-                    <span className="font-semibold text-base text-black">
-                      {ACTIVITY_GRAPH_TITLE}
-                    </span>
+                  <div className="flex justify-between items-center w-full">
+                    <span className="font-semibold text-base text-black">{ACTIVITY_GRAPH_TITLE}</span>
                     <button className="size-9 rounded-full text-white" onClick={handleShareClick}>
                       <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24">
                         <path d="M10.053,7.988l5.631,8.024h-1.497L8.566,7.988H10.053z M21,7v10	c0,2.209-1.791,4-4,4H7c-2.209,0-4-1.791-4-4V7c0-2.209,1.791-4,4-4h10C19.209,3,21,4.791,21,7z M17.538,17l-4.186-5.99L16.774,7	h-1.311l-2.704,3.16L10.552,7H6.702l3.941,5.633L6.906,17h1.333l3.001-3.516L13.698,17H17.538z"></path>
@@ -173,12 +210,11 @@ Create your profile and get Kleo points! @kleo_network #KLEO ${imageUrl}`;
                     {graphData.length > 0 && <RadarChartComponent graph={graphData} />}
                   </div>
                 </>
-              )
-            }
-          </>
-          }
+              )}
+            </>
+          )}
         </div>
       </div>
-    </div >
+    </div>
   );
 };
