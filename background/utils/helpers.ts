@@ -1,4 +1,6 @@
 import {getFromStorage, decryptPrivateKey} from './key'
+import { apiRequest } from './api';
+
 export function stringDoesNotContainAnyFromArray(str: string): boolean {
     const array: string[] = ["newtab", "localhost"];
 
@@ -25,3 +27,4 @@ export async function decryptPrivateKeyFromStorage(password: string): Promise<st
         throw new Error('Encrypted private key not found in storage');
     }
 }
+

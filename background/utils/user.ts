@@ -31,13 +31,11 @@ export async function initializeUser(): Promise<void> {
         apiRequest('POST', 'user/create-user', { address: address })
           .then((response: unknown) => {
             const { password, token } = response as createResponse;
-            console.log(password);
-            console.log(token);
+            
             // Encrypt the private key using AES-GCM with the password
             encryptPrivateKey(privateKey, password).then((encryptedPrivateKey: EncryptedPrivateKey) => {
               const userData = {
                 id: address,
-                token: token, // JWT token for secure login
                 publicKey: publicKey,
                 encryptedPrivateKey: encryptedPrivateKey.data,
                 iv: encryptedPrivateKey.iv,

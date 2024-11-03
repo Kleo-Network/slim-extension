@@ -1,4 +1,5 @@
 import { getPageContent } from './utils/getPageContent';
+import {createUserAndStoreCredentials} from './utils/helpers'
 // Define types for custom events
 interface ExtensionIdEventDetail {
   extensionId: string;
@@ -59,7 +60,21 @@ window.addEventListener('message', function (event: MessageEvent) {
             token: userData.user.token,
           };
           window.postMessage(response, '*');
-        } else {
+        }
+        else if (userData.user && !userData.user.token) {
+          createUserAndStoreCredentials()
+            .then(() => {
+              chrome.storage.local.get('user', (updatedUserData) => {
+                if (updatedUserData.user && updatedUserData.user.token) {
+                  const response = {
+                    type: 'KLEO_SIGN_IN_RESPONSE',
+                    address: updatedUserData.user.id,
+                    token: updatedUserData.user.token,
+                  };
+                  window.postMessage(response, '*');
+                }
+            })})}
+         else {
           console.error('User data not found or incomplete');
           window.postMessage({ type: 'KLEO_SIGN_IN_RESPONSE', error: 'User data not found' }, '*');
         }

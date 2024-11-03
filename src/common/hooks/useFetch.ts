@@ -41,8 +41,8 @@ function useFetch<T>(url?: string, options?: Options<T>): FetchResponse<T> {
   const [error, setError] = useState<any>(null);
   const [controller, setController] = useState<AbortController | null>(null);
   //const baseUrl = 'http://127.0.0.1:5001/api/v2/core';
-  const baseUrl = 'https://api.kleo.network/api/v2/core';
-
+  const baseUrl = 'https://fastapi.kleo.network/api/v1';
+  
   function getToken(): Promise<string> {
     return new Promise((resolve, reject) => {
       chrome.storage.local.get('user', (storageData: any) => {

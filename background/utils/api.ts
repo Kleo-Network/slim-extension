@@ -1,6 +1,6 @@
 // utils/api.ts
 
-const PRODUCTION = 'https://api.kleo.network/api/v2/core';
+const PRODUCTION = 'https://fastapi.kleo.network/api/v1';
 //const PRODUCTION = 'http://127.0.0.1:5001/api/v2/core';
 
 // Define types for the parameters
