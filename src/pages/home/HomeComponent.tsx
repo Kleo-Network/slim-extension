@@ -45,6 +45,7 @@ type CanvasSource = HTMLCanvasElement | HTMLImageElement;
 
 const ONE_HOUR_IN_MS = 60 * 60 * 1000;
 
+
 const getCachedImageUrl = () => {
   const cachedUrl = localStorage.getItem('cachedImageUrl');
   const lastUploadTime = localStorage.getItem('lastUploadTime');
@@ -90,6 +91,19 @@ export const HomeComponent = ({ user }: HomeComponentProps) => {
       },
     });
   }, [user.address]);
+
+  const handleCopyAddress = () => {
+    navigator.clipboard.writeText(user.address || '').then(
+      () => {
+        // You could optionally add a toast notification here to show success
+        console.log('Address copied to clipboard');
+      },
+      (err) => {
+        console.error('Failed to copy address:', err);
+      }
+    );
+  };
+
 
   const createCanvasWithWhiteBackground = (canvas: CanvasSource): string => {
     const tempCanvas = document.createElement('canvas') as HTMLCanvasElement;
@@ -171,8 +185,28 @@ Create your profile and get Kleo points! @kleo_network #KLEO ${imageUrl}`;
     <div className="h-full w-full bg-gray-blue-100 p-4 flex gap-4 flex-col">
       <div className="flex justify-between items-center w-full h-[42px]">
         <div className="flex flex-1 justify-start items-center gap-2 h-full mr-8">
-          <div className="flex flex-col items-start justify-center h-full w-fit">
+          <div className="flex flex-row items-center justify-center h-full w-fit gap-2">
             <div className="font-semibold text-base text-gray-700">{truncateText(user.address || '', 20)}</div>
+            <button
+              onClick={handleCopyAddress}
+              className="hover:text-gray-500 transition-colors"
+              title="Copy address to clipboard"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
           </div>
         </div>
         {/* Kleo Points Display */}
