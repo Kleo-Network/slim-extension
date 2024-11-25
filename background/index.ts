@@ -1,5 +1,5 @@
 import { initializeUser } from './utils/user.ts'
-import { newPage } from './utils/page.ts'
+import { newPage} from './utils/page.ts'
 
 // Get Previous Browsing History for classification.
 chrome.runtime.onInstalled.addListener(initializeUser);
