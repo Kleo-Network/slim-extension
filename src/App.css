@@ -45,6 +45,28 @@
   font-style: normal;
 }
 
+html,
+body {
+  margin: 0;
+  min-width: 400px;
+  background: #eaecf5;
+  font-family: 'inter', sans-serif;
+}
+
+body {
+  overflow: hidden;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.container {
+  width: 400px;
+  min-height: 640px;
+}
+
 .color-empty {
   fill: #ebedf0; /* Light gray, for empty tiles */
 }

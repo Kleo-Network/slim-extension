@@ -10,6 +10,9 @@
       "default_popup": "index.html",
       "default_title": "Kleo Network: Extension"
     },
+    "side_panel": {
+      "default_path": "index.html"
+    },
     "icons":{
       "128" : "logo/128.png",
       "64": "logo/64.png",
@@ -19,7 +22,8 @@
     "permissions": [
         "tabs",
         "history",
-        "storage"
+        "storage",
+        "sidePanel"
       ],
     "content_scripts": [
       {
@@ -34,4 +38,3 @@
       }
     ]
   }
-  
