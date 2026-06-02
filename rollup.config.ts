@@ -18,8 +18,11 @@ import autoprefixer from 'autoprefixer';
 import postcssImport from 'postcss-import';
 
 const production = !process.env.ROLLUP_WATCH;
+const productionOutputDir = 'prod';
 
 const extensions = ['.js', '.jsx', '.ts', '.tsx'];
+const outputPath = (...segments) => path.join(productionOutputDir, ...segments);
+const visualizerPath = (name) => `kleo-${name}.html`;
 
 // Common plugins used in multiple bundles
 const commonPlugins = [
@@ -44,7 +47,7 @@ const reactApp = {
     sourcemap: !production,
     format: 'iife',
     name: 'app',
-    file: 'dist/js/app.js',
+    file: outputPath('js', 'app.js'),
   },
   plugins: [
     ...commonPlugins,
@@ -63,7 +66,7 @@ const reactApp = {
     }),
     production &&
       visualizer({
-        filename: 'stats-app.html',
+        filename: visualizerPath('app'),
         template: 'treemap', // or 'sunburst' for different visualization
       }),
       postcss({
@@ -74,12 +77,12 @@ const reactApp = {
       svgr(),
     copy({
       targets: [
-        { src: 'src/logo/**/*', dest: 'dist/logo/' },
-        { src: 'src/assets/**/*', dest: 'dist/assets/' },
-        { src: 'public/**/*', dest: 'dist/' },
+        { src: 'src/logo/**/*', dest: outputPath('logo') },
+        { src: 'src/assets/**/*', dest: outputPath('assets') },
+        { src: 'public/**/*', dest: productionOutputDir },
         {
           src: 'manifest.json',
-          dest: 'dist/',
+          dest: productionOutputDir,
           transform: (contents) => {
             const jsonContent = JSON.parse(contents.toString());
             jsonContent.version = pkg.version;
@@ -99,7 +102,7 @@ const background = {
     sourcemap: !production,
     format: 'es',
     name: 'background',
-    file: 'dist/background.js',
+    file: outputPath('background.js'),
     inlineDynamicImports: true, // Add this line
   },
   plugins: [
@@ -117,7 +120,7 @@ const background = {
     }),
     production &&
       visualizer({
-        filename: 'stats-background.html',
+        filename: visualizerPath('background'),
         template: 'treemap',
       }),
   ],
@@ -131,7 +134,7 @@ const contentScript = {
     sourcemap: !production,
     format: 'iife',
     name: 'contentScript',
-    file: 'dist/contentScript.js',
+    file: outputPath('contentScript.js'),
   },
   plugins: [
     ...commonPlugins,
@@ -151,7 +154,7 @@ const contentScript = {
     }),
     production &&
       visualizer({
-        filename: 'stats-contentScript.html',
+        filename: visualizerPath('contentScript'),
         template: 'treemap',
       }),
   ],
@@ -164,7 +167,7 @@ const injectedScript = {
     sourcemap: !production,
     format: 'iife',
     name: 'injectedScript',
-    file: 'dist/injectedScript.js',
+    file: outputPath('injectedScript.js'),
   },
   plugins: [
     ...commonPlugins,
@@ -180,7 +183,7 @@ const injectedScript = {
     }),
     production &&
       visualizer({
-        filename: 'stats-injectedScript.html',
+        filename: visualizerPath('injectedScript'),
         template: 'treemap',
       }),
   ],

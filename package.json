@@ -26,6 +26,7 @@
   },
   "scripts": {
     "build": "rollup -c",
+    "test:rollup-config": "node scripts/test-rollup-config.js",
     "watch": "rollup -c -w"
   },
   "browserslist": {
